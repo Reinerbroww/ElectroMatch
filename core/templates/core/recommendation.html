@@ -1,0 +1,257 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- HEADER -->
+<div style="background: linear-gradient(135deg, #1a1a2e, #0f3460); padding: 40px 0 60px;">
+    <div class="container text-center text-white">
+        <h2 class="fw-bold mb-2">🔍 Cari Rekomendasi</h2>
+        <p class="text-white-50">Isi preferensi kamu dan biarkan sistem menemukan perangkat terbaik</p>
+
+        <!-- STEP INDICATOR -->
+        <div class="d-flex justify-content-center align-items-center gap-3 mt-4">
+            <div class="d-flex flex-column align-items-center">
+                <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold"
+                     style="width:36px; height:36px;
+                            background: {% if results %}#198754{% else %}#0d6efd{% endif %};
+                            color:white; font-size:0.85rem;">
+                    {% if results %}✓{% else %}1{% endif %}
+                </div>
+                <small class="mt-1" style="color:rgba(255,255,255,0.6); font-size:0.78rem;">Pilih Kategori</small>
+            </div>
+            <div style="height:2px; width:50px;
+                        background:{% if results %}#198754{% else %}rgba(255,255,255,0.2){% endif %};"></div>
+            <div class="d-flex flex-column align-items-center">
+                <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold"
+                     style="width:36px; height:36px;
+                            background:{% if results %}#198754{% else %}{% if request.method == 'POST' %}#0d6efd{% else %}rgba(255,255,255,0.2){% endif %}{% endif %};
+                            color:white; font-size:0.85rem;">
+                    {% if results %}✓{% else %}2{% endif %}
+                </div>
+                <small class="mt-1" style="color:rgba(255,255,255,0.6); font-size:0.78rem;">Atur Preferensi</small>
+            </div>
+            <div style="height:2px; width:50px;
+                        background:{% if results %}#198754{% else %}rgba(255,255,255,0.2){% endif %};"></div>
+            <div class="d-flex flex-column align-items-center">
+                <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold"
+                     style="width:36px; height:36px;
+                            background:{% if results %}#198754{% else %}rgba(255,255,255,0.2){% endif %};
+                            color:white; font-size:0.85rem;">
+                    3
+                </div>
+                <small class="mt-1" style="color:rgba(255,255,255,0.6); font-size:0.78rem;">Hasil</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container" style="margin-top: -30px; padding-bottom: 60px;">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+
+            <!-- FORM CARD -->
+            <div class="card border-0 shadow-sm p-4 mb-4" style="border-radius: 16px;">
+                <h6 class="fw-bold mb-4 text-dark">⚙️ Sesuaikan Kebutuhan Anda</h6>
+
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <!-- Kategori -->
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold text-dark" style="font-size:0.9rem;">
+                            Kategori Elektronik
+                        </label>
+                        <select name="category" class="form-select form-select-lg"
+                                style="border-radius:10px; border:1.5px solid #e9ecef;">
+                            <option value="">-- Pilih Kategori --</option>
+                            {% for val, label in form.category.field.choices %}
+                                {% if val %}
+                                <option value="{{ val }}"
+                                    {% if form.category.value == val|stringformat:"s" %}selected{% endif %}>
+                                    {{ label }}
+                                </option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Budget Slider -->
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold text-dark" style="font-size:0.9rem;">
+                            Rentang Harga
+                            <span class="text-primary fw-bold ms-2" id="budget-display">Rp 10.000.000</span>
+                        </label>
+                        <input
+                            type="range"
+                            class="form-range"
+                            name="budget"
+                            id="budget-slider"
+                            min="1000000"
+                            max="50000000"
+                            step="500000"
+                            value="{{ form.budget.value|default:'10000000' }}"
+                            oninput="updateBudget(this.value)"
+                        >
+                        <div class="d-flex justify-content-between">
+                            <small class="text-muted">Rp 1.000.000</small>
+                            <small class="text-muted">Rp 50.000.000</small>
+                        </div>
+                    </div>
+
+                    <!-- Kebutuhan -->
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold text-dark" style="font-size:0.9rem;">
+                            Kebutuhan Utama
+                        </label>
+                        <div class="row g-2">
+                            {% for val, label in form.kebutuhan.field.choices %}
+                            {% if val %}
+                            <div class="col-6">
+                                <input type="radio" class="btn-check" name="kebutuhan"
+                                       id="kebutuhan_{{ forloop.counter }}" value="{{ val }}"
+                                       {% if form.kebutuhan.value == val %}checked{% endif %}>
+                                <label class="btn btn-outline-primary w-100"
+                                       style="border-radius:10px; font-size:0.9rem;"
+                                       for="kebutuhan_{{ forloop.counter }}">
+                                    {{ label }}
+                                </label>
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <button type="submit"
+                            class="btn btn-primary btn-lg w-100"
+                            style="border-radius:10px; font-weight:600;">
+                        🔍 Cari Rekomendasi
+                    </button>
+                </form>
+            </div>
+
+            <!-- HASIL -->
+            {% if results %}
+            <div class="mb-3 d-flex align-items-center justify-content-between">
+                <h5 class="fw-bold mb-0">🏆 Rekomendasi Terbaik Untukmu</h5>
+                <a href="/recommendation/" class="btn btn-outline-primary btn-sm px-3">
+                    🔄 Cari Ulang
+                </a>
+            </div>
+
+            {% for r in results %}
+            <div class="card border-0 shadow-sm mb-3 overflow-hidden"
+                 style="border-radius:14px; transition: transform 0.2s;"
+                 onmouseover="this.style.transform='translateY(-2px)'"
+                 onmouseout="this.style.transform='translateY(0)'">
+
+                <!-- Rank Banner -->
+                {% if forloop.counter == 1 %}
+                <div class="text-white text-center py-1 fw-bold"
+                     style="background: linear-gradient(90deg, #f59e0b, #d97706); font-size:0.82rem;">
+                    🥇 Tingkat Kecocokan Tertinggi
+                </div>
+                {% elif forloop.counter == 2 %}
+                <div class="text-white text-center py-1 fw-semibold"
+                     style="background: #6c757d; font-size:0.82rem;">
+                    🥈 Rekomendasi #2
+                </div>
+                {% elif forloop.counter == 3 %}
+                <div class="text-white text-center py-1 fw-semibold"
+                     style="background: #cd7f32; font-size:0.82rem;">
+                    🥉 Rekomendasi #3
+                </div>
+                {% endif %}
+
+                <div class="p-4">
+                    <div class="d-flex align-items-center gap-3">
+
+                        <!-- Gambar -->
+                        {% if r.product.image %}
+                        <img src="{{ r.product.image.url }}"
+                             style="width:85px; height:85px; object-fit:contain;
+                                    border-radius:10px; background:#f8f9fa; padding:8px;
+                                    flex-shrink:0;">
+                        {% else %}
+                        <div style="width:85px; height:85px; background:#f1f3f5;
+                                    border-radius:10px; display:flex; align-items:center;
+                                    justify-content:center; font-size:2rem; flex-shrink:0;">
+                            📦
+                        </div>
+                        {% endif %}
+
+                        <!-- Info -->
+                        <div class="flex-grow-1 min-width-0">
+                            <h6 class="fw-bold mb-0">{{ r.product.name }}</h6>
+                            <small class="text-muted">
+                                {{ r.product.brand }} &bull; {{ r.product.category }}
+                            </small>
+
+                            <!-- Progress bar -->
+                            <div class="mt-2">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <small class="text-muted" style="font-size:0.78rem;">
+                                        Tingkat Kecocokan
+                                    </small>
+                                    <small class="fw-bold text-primary" style="font-size:0.78rem;">
+                                        {{ r.score|floatformat:0 }}%
+                                    </small>
+                                </div>
+                                <div class="progress" style="height:5px; border-radius:10px;">
+                                    <div class="progress-bar
+                                        {% if forloop.counter == 1 %}bg-warning
+                                        {% elif forloop.counter == 2 %}bg-secondary
+                                        {% else %}bg-danger{% endif %}"
+                                        style="width:{{ r.score|floatformat:0 }}%; border-radius:10px;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tags -->
+                            <div class="mt-2 d-flex gap-2 flex-wrap">
+                                <span class="badge"
+                                      style="background:#e8f4fd; color:#0d6efd;
+                                             font-size:0.75rem; border-radius:6px;">
+                                    SAW: {{ r.score }}
+                                </span>
+                                <span class="badge"
+                                      style="background:#f0fdf4; color:#16a34a;
+                                             font-size:0.75rem; border-radius:6px;">
+                                    Rp {{ r.product.price|floatformat:0 }}
+                                </span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+            {% elif request.method == "POST" %}
+            <div class="card border-0 shadow-sm p-4 text-center" style="border-radius:14px;">
+                <div style="font-size:3rem;">😔</div>
+                <h6 class="fw-bold mt-3">Tidak ada produk yang cocok</h6>
+                <p class="text-muted small">Coba ubah budget atau pilih kategori yang berbeda.</p>
+                <a href="/recommendation/" class="btn btn-outline-primary btn-sm px-4 mt-2">
+                    🔄 Coba Lagi
+                </a>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+
+<script>
+    function updateBudget(val) {
+        const formatted = new Intl.NumberFormat('id-ID').format(val);
+        document.getElementById('budget-display').textContent = 'Rp ' + formatted;
+    }
+
+    window.onload = function() {
+        const slider = document.getElementById('budget-slider');
+        if (slider) updateBudget(slider.value);
+    }
+</script>
+
+{% endblock %}

@@ -1,0 +1,233 @@
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from products.models import Product, Category, Criteria, ProductValue
+from products.forms import ProductForm, CriteriaForm, ProductValueForm
+
+
+def admin_login(request):
+    error = None
+    if request.user.is_authenticated:
+        return redirect('dashboard_index')
+
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None and user.is_staff:
+            login(request, user)
+            return redirect('dashboard_index')
+        else:
+            error = "Username atau password salah, atau bukan admin."
+
+    return render(request, 'dashboard/login.html', {'error': error})
+
+
+def admin_logout(request):
+    logout(request)
+    return redirect('admin_login')
+
+
+@login_required(login_url='/login/')
+def dashboard_index(request):
+    context = {
+        'total_products': Product.objects.count(),
+        'total_categories': Category.objects.count(),
+        'total_criteria': Criteria.objects.count(),
+        'total_values': ProductValue.objects.count(),
+        'recent_products': Product.objects.order_by('-id')[:5],
+    }
+    return render(request, 'dashboard/index.html', context)
+
+
+# ───────────── PRODUCT CRUD ─────────────
+@login_required(login_url='/login/')
+def dashboard_products(request):
+    products = Product.objects.select_related('category').all()
+    return render(request, 'dashboard/products.html', {'products': products})
+
+
+@login_required(login_url='/login/')
+def product_add(request):
+    form = ProductForm()
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Produk berhasil ditambahkan!')
+            return redirect('dashboard_products')
+
+    return render(request, 'dashboard/product_form.html', {
+        'form': form,
+        'title': 'Tambah Produk Baru',
+        'button': 'Simpan Produk'
+    })
+
+
+@login_required(login_url='/login/')
+def product_edit(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    form = ProductForm(instance=product)
+
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES, instance=product)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Produk berhasil diupdate!')
+            return redirect('dashboard_products')
+
+    return render(request, 'dashboard/product_form.html', {
+        'form': form,
+        'title': 'Edit Produk',
+        'button': 'Update Produk',
+        'product': product
+    })
+
+
+@login_required(login_url='/login/')
+def product_delete(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    if request.method == 'POST':
+        product.delete()
+        messages.success(request, 'Produk berhasil dihapus!')
+        return redirect('dashboard_products')
+
+    return render(request, 'dashboard/product_confirm_delete.html', {
+        'product': product
+    })
+
+
+# ───────────── CRITERIA CRUD ─────────────
+@login_required(login_url='/login/')
+def dashboard_criteria(request):
+    criteria = Criteria.objects.all()
+    total_weight = sum(c.weight for c in criteria)
+    return render(request, 'dashboard/criteria.html', {
+        'criteria': criteria,
+        'total_weight': round(total_weight, 2)
+    })
+
+
+@login_required(login_url='/login/')
+def criteria_add(request):
+    form = CriteriaForm()
+    if request.method == 'POST':
+        form = CriteriaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Kriteria berhasil ditambahkan!')
+            return redirect('dashboard_criteria')
+
+    return render(request, 'dashboard/criteria_form.html', {
+        'form': form,
+        'title': 'Tambah Kriteria SAW',
+        'button': 'Simpan Kriteria'
+    })
+
+
+@login_required(login_url='/login/')
+def criteria_edit(request, pk):
+    criteria = get_object_or_404(Criteria, pk=pk)
+    form = CriteriaForm(instance=criteria)
+
+    if request.method == 'POST':
+        form = CriteriaForm(request.POST, instance=criteria)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Kriteria berhasil diupdate!')
+            return redirect('dashboard_criteria')
+
+    return render(request, 'dashboard/criteria_form.html', {
+        'form': form,
+        'title': 'Edit Kriteria',
+        'button': 'Update Kriteria'
+    })
+
+
+@login_required(login_url='/login/')
+def criteria_delete(request, pk):
+    criteria = get_object_or_404(Criteria, pk=pk)
+    if request.method == 'POST':
+        criteria.delete()
+        messages.success(request, 'Kriteria berhasil dihapus!')
+        return redirect('dashboard_criteria')
+
+    return render(request, 'dashboard/criteria_confirm_delete.html', {
+        'criteria': criteria
+    })
+
+
+# ───────────── PRODUCT VALUE CRUD ─────────────
+@login_required(login_url='/login/')
+def dashboard_values(request):
+    # filter by product kalau ada
+    product_id = request.GET.get('product')
+    products = Product.objects.all()
+    selected_product = None
+
+    if product_id:
+        selected_product = get_object_or_404(Product, pk=product_id)
+        values = ProductValue.objects.filter(
+            product=selected_product
+        ).select_related('criteria')
+    else:
+        values = ProductValue.objects.select_related(
+            'product', 'criteria'
+        ).all()
+
+    return render(request, 'dashboard/values.html', {
+        'values': values,
+        'products': products,
+        'selected_product': selected_product,
+    })
+
+
+@login_required(login_url='/login/')
+def value_add(request):
+    form = ProductValueForm()
+    if request.method == 'POST':
+        form = ProductValueForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Nilai berhasil ditambahkan!')
+            return redirect('dashboard_values')
+
+    return render(request, 'dashboard/value_form.html', {
+        'form': form,
+        'title': 'Tambah Nilai Produk',
+        'button': 'Simpan Nilai'
+    })
+
+
+@login_required(login_url='/login/')
+def value_edit(request, pk):
+    value = get_object_or_404(ProductValue, pk=pk)
+    form = ProductValueForm(instance=value)
+
+    if request.method == 'POST':
+        form = ProductValueForm(request.POST, instance=value)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Nilai berhasil diupdate!')
+            return redirect('dashboard_values')
+
+    return render(request, 'dashboard/value_form.html', {
+        'form': form,
+        'title': 'Edit Nilai Produk',
+        'button': 'Update Nilai'
+    })
+
+
+@login_required(login_url='/login/')
+def value_delete(request, pk):
+    value = get_object_or_404(ProductValue, pk=pk)
+    if request.method == 'POST':
+        value.delete()
+        messages.success(request, 'Nilai berhasil dihapus!')
+        return redirect('dashboard_values')
+
+    return render(request, 'dashboard/value_confirm_delete.html', {
+        'value': value
+    })

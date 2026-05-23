@@ -1,0 +1,57 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% block menu_criteria %}active{% endblock %}
+
+{% block page_content %}
+<div class="mb-4">
+    <a href="/dashboard/criteria/" class="text-muted text-decoration-none" style="font-size:0.9rem;">
+        ← Kembali ke Kriteria
+    </a>
+    <h4 class="fw-bold mt-2">{{ title }}</h4>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="table-card p-4">
+
+            <!-- Info SAW -->
+            <div class="alert alert-info mb-4" style="font-size:0.85rem;">
+                💡 <strong>Tips:</strong> Benefit = semakin besar semakin bagus (RAM, Storage).
+                Cost = semakin kecil semakin bagus (Harga). Total semua bobot harus = 1.0
+            </div>
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Nama Kriteria</label>
+                    {{ form.name }}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Tipe Kriteria</label>
+                    {{ form.type }}
+                    <div class="d-flex gap-3 mt-2">
+                        <small class="text-success">↑ Benefit = makin besar makin bagus</small>
+                        <small class="text-danger">↓ Cost = makin kecil makin bagus</small>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Bobot (0.0 - 1.0)</label>
+                    {{ form.weight }}
+                    <small class="text-muted">Contoh: 0.3 = 30% dari total penilaian</small>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary px-4">
+                        💾 {{ button }}
+                    </button>
+                    <a href="/dashboard/criteria/" class="btn btn-outline-secondary px-4">
+                        Batal
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

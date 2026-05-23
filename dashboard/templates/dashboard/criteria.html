@@ -1,0 +1,92 @@
+{% extends 'dashboard/base_dashboard.html' %}
+
+{% block menu_criteria %}active{% endblock %}
+
+{% block page_content %}
+
+{% if messages %}
+{% for msg in messages %}
+<div class="alert alert-success alert-dismissible fade show mb-3">
+    {{ msg }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+{% endfor %}
+{% endif %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h4 class="fw-bold mb-1">Kriteria Penilaian SAW</h4>
+        <small class="text-muted">Kelola kriteria dan bobot metode SAW.</small>
+    </div>
+    <a href="/dashboard/criteria/add/" class="btn btn-primary px-4">
+        + Tambah Kriteria
+    </a>
+</div>
+
+<!-- Total bobot warning -->
+{% if total_weight != 1.0 %}
+<div class="alert alert-warning mb-3">
+    ⚠️ Total bobot saat ini = <strong>{{ total_weight }}</strong>.
+    Idealnya total bobot harus = <strong>1.0</strong> agar SAW akurat.
+</div>
+{% else %}
+<div class="alert alert-success mb-3">
+    ✅ Total bobot = <strong>{{ total_weight }}</strong>. SAW siap digunakan!
+</div>
+{% endif %}
+
+<div class="table-card">
+    <div class="table-header">
+        <h6>⚙️ Daftar Kriteria</h6>
+        <small class="text-muted">Total bobot: <strong>{{ total_weight }}</strong> / 1.0</small>
+    </div>
+    <table class="table table-hover mb-0">
+        <thead>
+            <tr>
+                <th>Nama Kriteria</th>
+                <th>Tipe</th>
+                <th>Bobot</th>
+                <th>Visualisasi</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for c in criteria %}
+            <tr>
+                <td class="fw-semibold">{{ c.name }}</td>
+                <td>
+                    {% if c.type == 'benefit' %}
+                    <span class="badge bg-success">↑ Benefit</span>
+                    {% else %}
+                    <span class="badge bg-danger">↓ Cost</span>
+                    {% endif %}
+                </td>
+                <td class="fw-bold text-primary">{{ c.weight }}</td>
+                <td style="min-width: 150px;">
+                    <div class="progress" style="height:6px;">
+                        <div class="progress-bar bg-primary"
+                             style="width: {% widthratio c.weight 1 100 %}%">
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <a href="/dashboard/criteria/edit/{{ c.id }}/"
+                       class="btn-icon me-1"
+                       style="background:#e8f4fd; color:#0d6efd;">✏️</a>
+                    <a href="/dashboard/criteria/delete/{{ c.id }}/"
+                       class="btn-icon"
+                       style="background:#fde8e8; color:#dc3545;">🗑️</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center text-muted py-4">
+                    Belum ada kriteria. Klik "+ Tambah Kriteria" untuk mulai.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

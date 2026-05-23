@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ElectroMatch Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f0f2f5;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 240px;
+            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0; left: 0;
+            z-index: 100;
+        }
+
+        .sidebar-brand {
+            padding: 24px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .sidebar-brand h5 {
+            color: white;
+            font-weight: 800;
+            font-size: 1.2rem;
+            margin: 0;
+            letter-spacing: 1px;
+        }
+
+        .sidebar-brand small {
+            color: rgba(255,255,255,0.4);
+            font-size: 0.75rem;
+        }
+
+        .sidebar-menu {
+            padding: 16px 0;
+            flex: 1;
+        }
+
+        .sidebar-label {
+            color: rgba(255,255,255,0.3);
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            padding: 12px 20px 6px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 11px 20px;
+            color: rgba(255,255,255,0.6);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            color: white;
+            background: rgba(255,255,255,0.07);
+            border-left-color: #4fc3f7;
+        }
+
+        .sidebar-menu a span.icon {
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar-bottom {
+            padding: 16px 20px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .sidebar-bottom .admin-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .admin-avatar {
+            width: 36px;
+            height: 36px;
+            background: #0d6efd;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .admin-name {
+            color: white;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .admin-role {
+            color: rgba(255,255,255,0.4);
+            font-size: 0.75rem;
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            margin-left: 240px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* TOPBAR */
+        .topbar {
+            background: white;
+            padding: 14px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .topbar input {
+            border: 1.5px solid #e9ecef;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 0.875rem;
+            width: 260px;
+            outline: none;
+        }
+
+        .topbar input:focus {
+            border-color: #0d6efd;
+        }
+
+        /* PAGE CONTENT */
+        .page-content {
+            padding: 28px;
+            flex: 1;
+        }
+
+        /* STAT CARDS */
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .stat-card .icon-box {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+
+        .stat-card .value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #1a1a2e;
+        }
+
+        .stat-card .label {
+            color: #6c757d;
+            font-size: 0.85rem;
+        }
+
+        .stat-card .change {
+            font-size: 0.78rem;
+            margin-top: 2px;
+        }
+
+        /* TABLE */
+        .table-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        .table-card .table-header {
+            padding: 18px 24px;
+            border-bottom: 1px solid #f1f3f5;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .table-card .table-header h6 {
+            font-weight: 700;
+            color: #1a1a2e;
+            margin: 0;
+        }
+
+        .table th {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #f1f3f5 !important;
+            padding: 12px 24px !important;
+        }
+
+        .table td {
+            padding: 14px 24px !important;
+            vertical-align: middle;
+            font-size: 0.9rem;
+            border-color: #f8f9fa !important;
+        }
+
+        .badge-category {
+            background: #e8f4fd;
+            color: #0d6efd;
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-size: 0.78rem;
+            font-weight: 600;
+        }
+
+        .btn-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <h5>⚡ ElectroMatch</h5>
+            <small>Admin Console</small>
+        </div>
+
+        <div class="sidebar-menu">
+    <div class="sidebar-label">Main</div>
+    <a href="/dashboard/" class="{% block menu_dashboard %}{% endblock %}">
+        <span class="icon">📊</span> Dashboard
+    </a>
+    <a href="/dashboard/products/" class="{% block menu_products %}{% endblock %}">
+        <span class="icon">📦</span> Data Produk
+    </a>
+    <a href="/dashboard/criteria/" class="{% block menu_criteria %}{% endblock %}">
+        <span class="icon">⚙️</span> Kriteria SAW
+    </a>
+    <a href="/dashboard/values/" class="{% block menu_values %}{% endblock %}">
+        <span class="icon">🔢</span> Nilai Produk
+    </a>
+
+    <div class="sidebar-label mt-2">System</div>
+    <a href="/admin/" target="_blank">
+        <span class="icon">🛠️</span> Django Admin
+    </a>
+    <a href="/logout/">
+        <span class="icon">🚪</span> Logout
+    </a>
+</div>
+
+        <div class="sidebar-bottom">
+            <div class="admin-info">
+                <div class="admin-avatar">
+                    {{ request.user.username|first|upper }}
+                </div>
+                <div>
+                    <div class="admin-name">{{ request.user.username }}</div>
+                    <div class="admin-role">Super Admin</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main-content">
+        <div class="topbar">
+            <input type="text" placeholder="🔍 Cari produk...">
+            <div class="d-flex align-items-center gap-3">
+                <span style="font-size:0.85rem; color:#6c757d;">
+                    ElectroMatch Panel
+                </span>
+            </div>
+        </div>
+
+        <div class="page-content">
+            {% block page_content %}{% endblock %}
+        </div>
+    </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

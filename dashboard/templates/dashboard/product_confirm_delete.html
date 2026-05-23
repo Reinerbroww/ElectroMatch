@@ -1,0 +1,47 @@
+{% extends 'dashboard/base_dashboard.html' %}
+
+{% block menu_products %}active{% endblock %}
+
+{% block page_content %}
+
+<div class="mb-4">
+    <a href="/dashboard/products/" class="text-muted text-decoration-none" style="font-size:0.9rem;">
+        ← Kembali ke Daftar Produk
+    </a>
+    <h4 class="fw-bold mt-2">Hapus Produk</h4>
+</div>
+
+<div class="col-md-6">
+    <div class="table-card p-4">
+
+        <div class="text-center mb-4">
+            {% if product.image %}
+            <img src="{{ product.image.url }}"
+                 style="height:100px; object-fit:contain; border-radius:8px; background:#f8f9fa; padding:12px;">
+            {% else %}
+            <div style="font-size:3rem;">📦</div>
+            {% endif %}
+            <h5 class="fw-bold mt-3">{{ product.name }}</h5>
+            <span class="badge-category">{{ product.category }}</span>
+        </div>
+
+        <div class="alert alert-danger">
+            ⚠️ Kamu yakin mau hapus produk ini? Tindakan ini tidak bisa dibatalkan.
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-danger px-4">
+                    🗑️ Ya, Hapus
+                </button>
+                <a href="/dashboard/products/" class="btn btn-outline-secondary px-4">
+                    Batal
+                </a>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+{% endblock %}

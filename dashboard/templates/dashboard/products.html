@@ -1,0 +1,85 @@
+{% extends 'dashboard/base_dashboard.html' %}
+
+{% block menu_products %}active{% endblock %}
+
+{% block page_content %}
+
+{% if messages %}
+{% for msg in messages %}
+<div class="alert alert-{{ msg.tags }} alert-dismissible fade show mb-3" role="alert">
+    {{ msg }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+{% endfor %}
+{% endif %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h4 class="fw-bold mb-1">Kelola Data Produk Elektronik</h4>
+        <small class="text-muted">Tambah, edit, dan hapus data produk elektronik.</small>
+    </div>
+    <a href="/dashboard/products/add/" class="btn btn-primary px-4">
+        + Tambah Data Baru
+    </a>
+</div>
+
+<div class="table-card">
+    <div class="table-header">
+        <h6>📦 Semua Produk</h6>
+        <small class="text-muted">{{ products.count }} produk ditemukan</small>
+    </div>
+    <table class="table table-hover mb-0">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nama Produk</th>
+                <th>Kategori</th>
+                <th>Harga</th>
+                <th>Brand</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td class="text-muted">PLM-{{ product.id|stringformat:"03d" }}</td>
+                <td>
+                    <div class="d-flex align-items-center gap-2">
+                        {% if product.image %}
+                        <img src="{{ product.image.url }}"
+                             style="width:36px; height:36px; object-fit:contain;
+                                    border-radius:6px; background:#f8f9fa;">
+                        {% else %}
+                        <div style="width:36px; height:36px; background:#f1f3f5;
+                                    border-radius:6px; display:flex; align-items:center;
+                                    justify-content:center;">📦</div>
+                        {% endif %}
+                        <span class="fw-semibold">{{ product.name }}</span>
+                    </div>
+                </td>
+                <td><span class="badge-category">{{ product.category }}</span></td>
+                <td>Rp {{ product.price|floatformat:0 }}</td>
+                <td class="text-muted">{{ product.brand }}</td>
+                <td>
+                    <a href="/dashboard/products/edit/{{ product.id }}/"
+                       class="btn-icon me-1"
+                       style="background:#e8f4fd; color:#0d6efd;"
+                       title="Edit">✏️</a>
+                    <a href="/dashboard/products/delete/{{ product.id }}/"
+                       class="btn-icon"
+                       style="background:#fde8e8; color:#dc3545;"
+                       title="Hapus">🗑️</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-center text-muted py-4">
+                    Belum ada produk. Klik "+ Tambah Data Baru" untuk mulai.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
