@@ -1,85 +1,122 @@
 {% extends 'dashboard/base_dashboard.html' %}
 
-{% block menu_products %}active{% endblock %}
+{% block nav_products %}bg-[#0052ff] text-white shadow-lg shadow-blue-500/30{% endblock %}
+{% block icon_prod %}{% endblock %}
 
 {% block page_content %}
-
-{% if messages %}
-{% for msg in messages %}
-<div class="alert alert-{{ msg.tags }} alert-dismissible fade show mb-3" role="alert">
-    {{ msg }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-</div>
-{% endfor %}
-{% endif %}
-
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <h4 class="fw-bold mb-1">Kelola Data Produk Elektronik</h4>
-        <small class="text-muted">Tambah, edit, dan hapus data produk elektronik.</small>
+<div class="max-w-[1100px] mx-auto pb-10">
+    
+    <div class="flex justify-between items-end mb-8">
+        <div>
+            <h1 class="text-[32px] font-extrabold text-gray-900 tracking-tight leading-tight mb-2">Kelola Data Produk Elektronik</h1>
+            <p class="text-[14px] text-gray-500 font-medium max-w-xl">Lakukan manajemen inventaris perangkat elektronik dengan presisi. Tambahkan, perbarui, atau hapus data produk dari basis data ElectroMatch.</p>
+        </div>
+        <a href="{% url 'product_add' %}" class="bg-[#0052ff] hover:bg-blue-700 text-white px-5 py-3 rounded-xl text-[13px] font-bold shadow-lg shadow-blue-500/25 transition flex items-center gap-2">
+            <span class="material-symbols-outlined text-[18px]">add</span> Tambah Data Baru
+        </a>
     </div>
-    <a href="/dashboard/products/add/" class="btn btn-primary px-4">
-        + Tambah Data Baru
-    </a>
-</div>
 
-<div class="table-card">
-    <div class="table-header">
-        <h6>📦 Semua Produk</h6>
-        <small class="text-muted">{{ products.count }} produk ditemukan</small>
+    <div class="grid grid-cols-3 gap-5 mb-8">
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between">
+            <div>
+                <p class="text-[12px] font-bold text-gray-400 mb-1">Total Produk</p>
+                <h3 class="text-[28px] font-extrabold text-gray-900 leading-none">124 <span class="text-[12px] font-bold text-[#0052ff] ml-1">Perangkat</span></h3>
+            </div>
+        </div>
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between">
+            <div>
+                <p class="text-[12px] font-bold text-gray-400 mb-1">Kategori Terpopuler</p>
+                <h3 class="text-[28px] font-extrabold text-gray-900 leading-none">Laptop <span class="text-[12px] font-bold text-red-500 ml-1">42%</span></h3>
+            </div>
+        </div>
+        <div class="bg-[#0052ff] p-6 rounded-2xl shadow-lg shadow-blue-500/30 border border-blue-600 flex items-center justify-between relative overflow-hidden">
+            <div class="relative z-10">
+                <p class="text-[12px] font-bold text-blue-200 mb-1">Update Terakhir</p>
+                <h3 class="text-[24px] font-extrabold text-white leading-none mb-1">15 Menit yang lalu</h3>
+                <p class="text-[10px] font-bold text-blue-200 uppercase">Oleh Admin Utama</p>
+            </div>
+            <span class="material-symbols-outlined text-[80px] text-white/10 absolute -right-4 -bottom-4">history</span>
+        </div>
     </div>
-    <table class="table table-hover mb-0">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nama Produk</th>
-                <th>Kategori</th>
-                <th>Harga</th>
-                <th>Brand</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for product in products %}
-            <tr>
-                <td class="text-muted">PLM-{{ product.id|stringformat:"03d" }}</td>
-                <td>
-                    <div class="d-flex align-items-center gap-2">
-                        {% if product.image %}
-                        <img src="{{ product.image.url }}"
-                             style="width:36px; height:36px; object-fit:contain;
-                                    border-radius:6px; background:#f8f9fa;">
-                        {% else %}
-                        <div style="width:36px; height:36px; background:#f1f3f5;
-                                    border-radius:6px; display:flex; align-items:center;
-                                    justify-content:center;">📦</div>
-                        {% endif %}
-                        <span class="fw-semibold">{{ product.name }}</span>
-                    </div>
-                </td>
-                <td><span class="badge-category">{{ product.category }}</span></td>
-                <td>Rp {{ product.price|floatformat:0 }}</td>
-                <td class="text-muted">{{ product.brand }}</td>
-                <td>
-                    <a href="/dashboard/products/edit/{{ product.id }}/"
-                       class="btn-icon me-1"
-                       style="background:#e8f4fd; color:#0d6efd;"
-                       title="Edit">✏️</a>
-                    <a href="/dashboard/products/delete/{{ product.id }}/"
-                       class="btn-icon"
-                       style="background:#fde8e8; color:#dc3545;"
-                       title="Hapus">🗑️</a>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="6" class="text-center text-muted py-4">
-                    Belum ada produk. Klik "+ Tambah Data Baru" untuk mulai.
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
 
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-10">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left">
+                <thead class="bg-gray-50/50">
+                    <tr>
+                        <th class="px-8 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest w-24">ID</th>
+                        <th class="px-8 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Nama Perangkat</th>
+                        <th class="px-8 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center">Kategori</th>
+                        <th class="px-8 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Harga</th>
+                        <th class="px-8 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    {% for p in products %}
+                    <tr class="hover:bg-gray-50/30 transition">
+                        <td class="px-8 py-5 text-[13px] text-gray-500 font-medium">#EM-00{{ p.id }}</td>
+                        <td class="px-8 py-5">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center border border-gray-200">
+                                    <span class="material-symbols-outlined text-gray-600 icon-outline">laptop_mac</span>
+                                </div>
+                                <span class="font-bold text-gray-900 text-[14px]">{{ p.name }}</span>
+                            </div>
+                        </td>
+                        <td class="px-8 py-5 text-center">
+                            <span class="inline-block px-3 py-1 bg-blue-50 text-[#0052ff] border border-blue-100 text-[11px] font-extrabold rounded-full">{{ p.category.name|default:"Laptop" }}</span>
+                        </td>
+                        <td class="px-8 py-5 font-bold text-gray-900 text-[14px]">Rp {{ p.price|floatformat:0 }}</td>
+                        <td class="px-8 py-5">
+                            <div class="flex justify-center gap-3">
+                                <button class="text-[#0052ff] hover:text-blue-700 transition"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+                                <button class="text-red-500 hover:text-red-700 transition"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr class="hover:bg-gray-50/30 transition">
+                        <td class="px-8 py-5 text-[13px] text-gray-500 font-medium">#EM-001</td>
+                        <td class="px-8 py-5">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center border border-gray-200">
+                                    <span class="material-symbols-outlined text-gray-600 icon-outline">laptop_mac</span>
+                                </div>
+                                <span class="font-bold text-gray-900 text-[14px]">MacBook Pro M3 14"</span>
+                            </div>
+                        </td>
+                        <td class="px-8 py-5 text-center"><span class="inline-block px-3 py-1 bg-blue-50 text-[#0052ff] border border-blue-100 text-[11px] font-extrabold rounded-full">Laptop</span></td>
+                        <td class="px-8 py-5 font-bold text-gray-900 text-[14px]">Rp 28.999.000</td>
+                        <td class="px-8 py-5">
+                            <div class="flex justify-center gap-3">
+                                <button class="text-[#0052ff] hover:text-blue-700 transition"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+                                <button class="text-red-500 hover:text-red-700 transition"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="px-8 py-4 flex items-center justify-between border-t border-gray-100 bg-white">
+            <span class="text-[12px] font-bold text-gray-400">Menampilkan 5 dari 124 produk</span>
+            <div class="flex items-center gap-1">
+                <button class="w-8 h-8 rounded border border-gray-200 text-gray-400 hover:bg-gray-50 flex items-center justify-center"><span class="material-symbols-outlined text-[18px]">chevron_left</span></button>
+                <button class="w-8 h-8 rounded bg-[#0052ff] text-white text-[12px] font-bold shadow-md">1</button>
+                <button class="w-8 h-8 rounded border border-gray-200 text-gray-500 hover:bg-gray-50 text-[12px] font-bold">2</button>
+                <button class="w-8 h-8 rounded border border-gray-200 text-gray-500 hover:bg-gray-50 text-[12px] font-bold">3</button>
+                <button class="w-8 h-8 rounded border border-gray-200 text-gray-400 hover:bg-gray-50 flex items-center justify-center"><span class="material-symbols-outlined text-[18px]">chevron_right</span></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex justify-between text-[11px] font-medium text-gray-400 mt-6 border-t border-gray-200 pt-6">
+        <p>© 2026 ElectroMatch Admin Console. Seluruh hak cipta dilindungi.</p>
+        <div class="flex gap-4">
+            <a href="#" class="hover:text-gray-600 transition">Kebijakan Privasi</a>
+            <a href="#" class="hover:text-gray-600 transition">Bantuan</a>
+        </div>
+    </div>
+</div>
 {% endblock %}

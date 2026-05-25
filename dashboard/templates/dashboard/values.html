@@ -1,54 +1,133 @@
 {% extends 'dashboard/base_dashboard.html' %}
-{% block menu_values %}active{% endblock %}
+
+{% block nav_values %}bg-primary text-white shadow-lg shadow-primary/25 hover:bg-primary/90{% endblock %}
+{% block icon_val %}{% endblock %}
 
 {% block page_content %}
-<div class="mb-4">
-    <a href="/dashboard/values/" class="text-muted text-decoration-none" style="font-size:0.9rem;">
-        ← Kembali ke Nilai Produk
-    </a>
-    <h4 class="fw-bold mt-2">{{ title }}</h4>
-</div>
+<div class="max-w-[1200px] mx-auto">
+    
+    <div class="flex justify-between items-start mb-10">
+        <div class="max-w-2xl">
+            <h2 class="text-[32px] font-bold text-gray-900 leading-tight tracking-tight">Penilaian & Perankingan</h2>
+            <p class="text-[#6b7280] text-[15px] font-medium mt-2">
+                Lakukan perankingan produk elektronik berdasarkan kriteria yang telah ditentukan dengan presisi. Update atau hitung ulang data skor akhir untuk mendapatkan hasil terbaru.
+            </p>
+        </div>
+        <button class="bg-[#003ec7] hover:bg-[#0038b6] hover:-translate-y-1 text-white px-6 py-3.5 rounded-xl flex items-center space-x-2 text-[14px] font-bold transition-all shadow-lg shadow-primary/25" onclick="simulateRecalculation()">
+            <span class="material-symbols-outlined text-xl" id="calc-icon">refresh</span>
+            <span>Hitung Ulang</span>
+        </button>
+    </div>
 
-<div class="row">
-    <div class="col-md-6">
-        <div class="table-card p-4">
+    <div class="bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-outline-variant/30 overflow-hidden mb-12">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left">
+                <thead>
+                    <tr class="bg-surface-container-low/50 border-b border-outline-variant/30">
+                        <th class="px-8 py-5 text-[11px] font-extrabold text-[#6b7280] uppercase tracking-widest w-24">Peringkat</th>
+                        <th class="px-8 py-5 text-[11px] font-extrabold text-[#6b7280] uppercase tracking-widest">Nama Produk</th>
+                        <th class="px-8 py-5 text-[11px] font-extrabold text-[#6b7280] uppercase tracking-widest text-center">Harga</th>
+                        <th class="px-8 py-5 text-[11px] font-extrabold text-[#6b7280] uppercase tracking-widest text-center">RAM</th>
+                        <th class="px-8 py-5 text-[11px] font-extrabold text-[#6b7280] uppercase tracking-widest text-center">Baterai</th>
+                        <th class="px-8 py-5 text-[11px] font-extrabold text-[#6b7280] uppercase tracking-widest text-right">Skor Akhir</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-[#f3f4f6]" id="ranking-table-body">
+                    
+                    {% for r in rankings %}
+                    <tr class="hover:bg-surface-container-low/30 transition-colors">
+                        <td class="px-8 py-5 whitespace-nowrap">
+                            {% if forloop.counter == 1 %}
+                                <span class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-primary/10 text-primary font-extrabold text-[13px]">#{{ forloop.counter }}</span>
+                            {% else %}
+                                <span class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-surface-container-low text-outline font-extrabold text-[13px]">#{{ forloop.counter }}</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-8 py-5">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-12 h-12 rounded-[12px] bg-surface-container-low overflow-hidden shrink-0 border border-outline-variant/30 flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-outline-variant">laptop_mac</span>
+                                </div>
+                                <div>
+                                    <p class="text-[15px] font-extrabold text-gray-900">{{ r.product.name }}</p>
+                                    <p class="text-[11px] font-bold text-gray-400 tracking-wider">SKU: EM-900{{ r.product.id }}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-8 py-5 text-center">
+                            <span class="inline-block px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-[12px] font-bold">95</span>
+                        </td>
+                        <td class="px-8 py-5 text-center">
+                            <span class="inline-block px-3 py-1 rounded-full bg-purple-50 text-purple-600 text-[12px] font-bold">98</span>
+                        </td>
+                        <td class="px-8 py-5 text-center">
+                            <span class="inline-block px-3 py-1 rounded-full bg-pink-50 text-pink-600 text-[12px] font-bold">100</span>
+                        </td>
+                        <td class="px-8 py-5 text-right">
+                            <span class="text-[16px] font-extrabold text-gray-900">{{ r.score }}</span>
+                        </td>
+                    </tr>
+                    
+                    {% empty %}
+                    <tr class="hover:bg-surface-container-low/30 transition-colors">
+                        <td class="px-8 py-5 whitespace-nowrap"><span class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-primary/10 text-primary font-extrabold text-[13px]">#1</span></td>
+                        <td class="px-8 py-5">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-12 h-12 rounded-[12px] bg-surface-container-low flex items-center justify-center"><span class="material-symbols-outlined text-outline">laptop_mac</span></div>
+                                <div><p class="text-[15px] font-extrabold text-gray-900">ASUS ROG Zenith</p><p class="text-[11px] font-bold text-gray-400">SKU: EM-9001</p></div>
+                            </div>
+                        </td>
+                        <td class="px-8 py-5 text-center"><span class="inline-block px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-[12px] font-bold">95</span></td>
+                        <td class="px-8 py-5 text-center"><span class="inline-block px-3 py-1 rounded-full bg-purple-50 text-purple-600 text-[12px] font-bold">98</span></td>
+                        <td class="px-8 py-5 text-center"><span class="inline-block px-3 py-1 rounded-full bg-pink-50 text-pink-600 text-[12px] font-bold">100</span></td>
+                        <td class="px-8 py-5 text-right"><span class="text-[16px] font-extrabold text-gray-900">98.4</span></td>
+                    </tr>
+                    {% endfor %}
 
-            <div class="alert alert-info mb-4" style="font-size:0.85rem;">
-                💡 <strong>Tips input nilai:</strong><br>
-                - RAM → isi dalam GB (contoh: 16)<br>
-                - Storage → isi dalam GB (contoh: 512)<br>
-                - Harga → isi dalam jutaan (contoh: 15 untuk 15 juta)<br>
-                - Baterai → isi dalam mAh (contoh: 5000)
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="px-8 py-5 flex items-center justify-between border-t border-gray-100 bg-white">
+            <span class="text-[13px] font-semibold text-gray-400">Menampilkan peringkat 10 besar</span>
+            <div class="flex items-center space-x-2">
+                <button class="w-9 h-9 rounded-[10px] bg-primary text-white text-[13px] font-bold shadow-md shadow-primary/20">1</button>
             </div>
-
-            <form method="POST">
-                {% csrf_token %}
-
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Produk</label>
-                    {{ form.product }}
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Kriteria</label>
-                    {{ form.criteria }}
-                </div>
-
-                <div class="mb-4">
-                    <label class="form-label fw-semibold">Nilai</label>
-                    {{ form.value }}
-                </div>
-
-                <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-primary px-4">
-                        💾 {{ button }}
-                    </button>
-                    <a href="/dashboard/values/" class="btn btn-outline-secondary px-4">
-                        Batal
-                    </a>
-                </div>
-            </form>
         </div>
     </div>
 </div>
+
+<script>
+function simulateRecalculation() {
+    const btn = document.querySelector('button[onclick="simulateRecalculation()"]');
+    const icon = document.getElementById('calc-icon');
+    const tbody = document.getElementById('ranking-table-body');
+    
+    btn.classList.add('opacity-70', 'pointer-events-none');
+    icon.classList.add('animate-spin');
+    tbody.classList.add('opacity-40', 'transition-opacity', 'duration-500');
+    
+    const notification = document.createElement('div');
+    notification.className = 'fixed bottom-10 right-10 bg-[#2c3338] text-white px-6 py-4 rounded-xl shadow-2xl z-[60] flex items-center space-x-3 transform translate-y-20 transition-transform duration-300 border border-white/10';
+    notification.innerHTML = `<span class="material-symbols-outlined text-blue-400">sync</span> <span class="font-medium text-sm">Menghitung ulang data perankingan...</span>`;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => notification.classList.remove('translate-y-20'), 100);
+
+    // Simulasi memuat 2 detik lalu selesai
+    setTimeout(() => {
+        btn.classList.remove('opacity-70', 'pointer-events-none');
+        icon.classList.remove('animate-spin');
+        tbody.classList.remove('opacity-40');
+        
+        notification.innerHTML = `<span class="material-symbols-outlined text-green-400">check_circle</span> <span class="font-medium text-sm">Perhitungan selesai. Data diperbarui.</span>`;
+        
+        // Refresh halaman otomatis agar data tersinkronisasi dari Django
+        setTimeout(() => {
+            notification.classList.add('translate-y-20');
+            window.location.reload(); 
+        }, 1500);
+    }, 2000);
+}
+</script>
 {% endblock %}

@@ -1,324 +1,112 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="id">
+<html class="light" lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ElectroMatch Admin</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>ElectroMatch Admin Dashboard</title>
+    
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background: #f0f2f5;
-            display: flex;
-            min-height: 100vh;
-        }
-
-        /* SIDEBAR */
-        .sidebar {
-            width: 240px;
-            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            position: fixed;
-            top: 0; left: 0;
-            z-index: 100;
-        }
-
-        .sidebar-brand {
-            padding: 24px 20px;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-        }
-
-        .sidebar-brand h5 {
-            color: white;
-            font-weight: 800;
-            font-size: 1.2rem;
-            margin: 0;
-            letter-spacing: 1px;
-        }
-
-        .sidebar-brand small {
-            color: rgba(255,255,255,0.4);
-            font-size: 0.75rem;
-        }
-
-        .sidebar-menu {
-            padding: 16px 0;
-            flex: 1;
-        }
-
-        .sidebar-label {
-            color: rgba(255,255,255,0.3);
-            font-size: 0.7rem;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            padding: 12px 20px 6px;
-        }
-
-        .sidebar-menu a {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 11px 20px;
-            color: rgba(255,255,255,0.6);
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: all 0.2s;
-            border-left: 3px solid transparent;
-        }
-
-        .sidebar-menu a:hover,
-        .sidebar-menu a.active {
-            color: white;
-            background: rgba(255,255,255,0.07);
-            border-left-color: #4fc3f7;
-        }
-
-        .sidebar-menu a span.icon {
-            width: 20px;
-            text-align: center;
-        }
-
-        .sidebar-bottom {
-            padding: 16px 20px;
-            border-top: 1px solid rgba(255,255,255,0.08);
-        }
-
-        .sidebar-bottom .admin-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 12px;
-        }
-
-        .admin-avatar {
-            width: 36px;
-            height: 36px;
-            background: #0d6efd;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 700;
-            font-size: 0.9rem;
-        }
-
-        .admin-name {
-            color: white;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-
-        .admin-role {
-            color: rgba(255,255,255,0.4);
-            font-size: 0.75rem;
-        }
-
-        /* MAIN CONTENT */
-        .main-content {
-            margin-left: 240px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* TOPBAR */
-        .topbar {
-            background: white;
-            padding: 14px 28px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-            position: sticky;
-            top: 0;
-            z-index: 50;
-        }
-
-        .topbar input {
-            border: 1.5px solid #e9ecef;
-            border-radius: 8px;
-            padding: 8px 16px;
-            font-size: 0.875rem;
-            width: 260px;
-            outline: none;
-        }
-
-        .topbar input:focus {
-            border-color: #0d6efd;
-        }
-
-        /* PAGE CONTENT */
-        .page-content {
-            padding: 28px;
-            flex: 1;
-        }
-
-        /* STAT CARDS */
-        .stat-card {
-            background: white;
-            border-radius: 12px;
-            padding: 20px 24px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-
-        .stat-card .icon-box {
-            width: 48px;
-            height: 48px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.3rem;
-        }
-
-        .stat-card .value {
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: #1a1a2e;
-        }
-
-        .stat-card .label {
-            color: #6c757d;
-            font-size: 0.85rem;
-        }
-
-        .stat-card .change {
-            font-size: 0.78rem;
-            margin-top: 2px;
-        }
-
-        /* TABLE */
-        .table-card {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            overflow: hidden;
-        }
-
-        .table-card .table-header {
-            padding: 18px 24px;
-            border-bottom: 1px solid #f1f3f5;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .table-card .table-header h6 {
-            font-weight: 700;
-            color: #1a1a2e;
-            margin: 0;
-        }
-
-        .table th {
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: #6c757d;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 1px solid #f1f3f5 !important;
-            padding: 12px 24px !important;
-        }
-
-        .table td {
-            padding: 14px 24px !important;
-            vertical-align: middle;
-            font-size: 0.9rem;
-            border-color: #f8f9fa !important;
-        }
-
-        .badge-category {
-            background: #e8f4fd;
-            color: #0d6efd;
-            border-radius: 6px;
-            padding: 4px 10px;
-            font-size: 0.78rem;
-            font-weight: 600;
-        }
-
-        .btn-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            border: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.85rem;
-            cursor: pointer;
-        }
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .icon-outline { font-variation-settings: 'FILL' 0; }
+        /* Kustomisasi Scrollbar */
+        main::-webkit-scrollbar { width: 8px; }
+        main::-webkit-scrollbar-track { background: transparent; }
+        main::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
     </style>
 </head>
-<body>
+<body class="bg-[#f0f2f5] text-[#191c1e] min-h-screen overflow-hidden">
 
-    <!-- SIDEBAR -->
-    <div class="sidebar">
-        <div class="sidebar-brand">
-            <h5>⚡ ElectroMatch</h5>
-            <small>Admin Console</small>
-        </div>
-
-        <div class="sidebar-menu">
-    <div class="sidebar-label">Main</div>
-    <a href="/dashboard/" class="{% block menu_dashboard %}{% endblock %}">
-        <span class="icon">📊</span> Dashboard
-    </a>
-    <a href="/dashboard/products/" class="{% block menu_products %}{% endblock %}">
-        <span class="icon">📦</span> Data Produk
-    </a>
-    <a href="/dashboard/criteria/" class="{% block menu_criteria %}{% endblock %}">
-        <span class="icon">⚙️</span> Kriteria SAW
-    </a>
-    <a href="/dashboard/values/" class="{% block menu_values %}{% endblock %}">
-        <span class="icon">🔢</span> Nilai Produk
-    </a>
-
-    <div class="sidebar-label mt-2">System</div>
-    <a href="/admin/" target="_blank">
-        <span class="icon">🛠️</span> Django Admin
-    </a>
-    <a href="/logout/">
-        <span class="icon">🚪</span> Logout
-    </a>
-</div>
-
-        <div class="sidebar-bottom">
-            <div class="admin-info">
-                <div class="admin-avatar">
-                    {{ request.user.username|first|upper }}
+    <div class="flex h-screen overflow-hidden">
+        
+        <aside class="w-[260px] bg-[#2c3338] flex flex-col h-full shrink-0 shadow-xl z-50">
+            
+            <div class="p-6 pb-4 border-b border-white/5">
+                <div class="flex items-center gap-3 mb-1">
+                    <svg width="32" height="32" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" class="shrink-0">
+                        <path d="M45 30H30C24.477 30 20 34.477 20 40V80C20 85.523 24.477 90 30 90H45" stroke="#0052ff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M20 60H38" stroke="#0052ff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="48" cy="60" r="7" fill="#0052ff"/>
+                        <path d="M72 20L48 65H68L60 100L92 50H72L78 20Z" fill="#0052ff"/>
+                        <path d="M96 90V40C96 34.477 91.523 30 86 30" stroke="#0052ff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <h1 class="font-extrabold text-[22px] tracking-tight leading-none">
+                        <span class="text-[#0052ff]">Electro</span><span class="text-white">Match</span>
+                    </h1>
                 </div>
-                <div>
-                    <div class="admin-name">{{ request.user.username }}</div>
-                    <div class="admin-role">Super Admin</div>
+                <p class="text-gray-400 text-[10px] font-bold uppercase tracking-widest ml-[44px] mt-1.5">Admin Console</p>
+            </div>
+
+            <nav class="flex-1 px-4 py-6 flex flex-col gap-1.5 overflow-y-auto">
+                <a href="/dashboard/" class="flex items-center gap-3 px-4 py-3 rounded-[10px] transition-colors {% block nav_dashboard %}text-gray-300 hover:bg-white/5 hover:text-white{% endblock %}">
+                    <span class="material-symbols-outlined text-[22px] {% block icon_dash %}icon-outline{% endblock %}">grid_view</span>
+                    <span class="font-semibold text-[14px]">Dashboard</span>
+                </a>
+                <a href="/dashboard/criteria/" class="flex items-center gap-3 px-4 py-3 rounded-[10px] transition-colors {% block nav_criteria %}text-gray-300 hover:bg-white/5 hover:text-white{% endblock %}">
+                    <span class="material-symbols-outlined text-[22px] {% block icon_crit %}icon-outline{% endblock %}">tune</span>
+                    <span class="font-semibold text-[14px]">Data Kriteria</span>
+                </a>
+                <a href="/dashboard/products/" class="flex items-center gap-3 px-4 py-3 rounded-[10px] transition-colors {% block nav_products %}text-gray-300 hover:bg-white/5 hover:text-white{% endblock %}">
+                    <span class="material-symbols-outlined text-[22px] {% block icon_prod %}icon-outline{% endblock %}">inventory_2</span>
+                    <span class="font-semibold text-[14px]">Data Produk</span>
+                </a>
+                <a href="/dashboard/values/" class="flex items-center gap-3 px-4 py-3 rounded-[10px] transition-colors {% block nav_values %}text-gray-300 hover:bg-white/5 hover:text-white{% endblock %}">
+                    <span class="material-symbols-outlined text-[22px] {% block icon_val %}icon-outline{% endblock %}">bar_chart</span>
+                    <span class="font-semibold text-[14px]">Penilaian</span>
+                </a>
+            </nav>
+
+            <div class="px-4 pb-6 pt-4 flex flex-col gap-1.5 border-t border-white/5 bg-black/10">
+                <a href="/admin/" target="_blank" class="flex items-center gap-3 px-4 py-2.5 rounded-[10px] text-gray-300 hover:bg-white/5 hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-[20px] icon-outline">settings</span>
+                    <span class="font-semibold text-[14px]">Settings</span>
+                </a>
+                <a href="/logout/" class="flex items-center gap-3 px-4 py-2.5 rounded-[10px] text-gray-300 hover:bg-white/5 hover:text-white transition-colors mb-4">
+                    <span class="material-symbols-outlined text-[20px] icon-outline">logout</span>
+                    <span class="font-semibold text-[14px]">Logout</span>
+                </a>
+                
+                <div class="flex items-center gap-3 px-3 py-3 bg-white/5 rounded-[12px] border border-white/10">
+                    <div class="w-9 h-9 rounded-full bg-[#003ec7] text-white flex items-center justify-center font-bold text-[14px]">
+                        {{ request.user.username|first|upper }}
+                    </div>
+                    <div class="overflow-hidden">
+                        <p class="text-white text-[13px] font-bold truncate leading-tight">{{ request.user.username|default:"Admin User" }}</p>
+                        <p class="text-gray-400 text-[11px] font-medium mt-0.5">SUPER ADMIN</p>
+                    </div>
                 </div>
             </div>
+        </aside>
+
+        <div class="flex-1 flex flex-col min-w-0">
+            <header class="h-[72px] bg-white flex items-center justify-between px-8 border-b border-gray-200 shrink-0 z-40">
+                <div class="flex items-center bg-gray-50 border border-gray-200 rounded-full px-4 py-2 w-[400px]">
+                    <span class="material-symbols-outlined text-gray-400 text-[20px] mr-2">search</span>
+                    <input type="text" placeholder="Cari data, laporan, atau produk..." class="bg-transparent border-none focus:ring-0 text-[14px] font-medium w-full placeholder-gray-400 outline-none"/>
+                </div>
+                <div class="flex items-center gap-5">
+                    <button class="relative text-gray-500 hover:text-[#003ec7] transition">
+                        <span class="material-symbols-outlined text-[24px] icon-outline">notifications</span>
+                        <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+                    </button>
+                    <button class="text-gray-500 hover:text-[#003ec7] transition">
+                        <span class="material-symbols-outlined text-[24px] icon-outline">help</span>
+                    </button>
+                    <div class="h-6 w-px bg-gray-200 mx-2"></div>
+                    <span class="text-[13px] font-bold text-gray-500 bg-gray-50 px-3 py-1.5 rounded-md border border-gray-200">Senin, 20 Mei 2026</span>
+                </div>
+            </header>
+
+            <main class="flex-1 overflow-y-auto bg-[#f4f7f9] p-8">
+                {% block page_content %}{% endblock %}
+            </main>
         </div>
+
     </div>
-
-    <!-- MAIN -->
-    <div class="main-content">
-        <div class="topbar">
-            <input type="text" placeholder="🔍 Cari produk...">
-            <div class="d-flex align-items-center gap-3">
-                <span style="font-size:0.85rem; color:#6c757d;">
-                    ElectroMatch Panel
-                </span>
-            </div>
-        </div>
-
-        <div class="page-content">
-            {% block page_content %}{% endblock %}
-        </div>
-    </div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

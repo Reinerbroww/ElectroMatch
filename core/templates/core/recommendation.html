@@ -1,257 +1,133 @@
-{% extends 'base.html' %}
-{% load static %}
+<!DOCTYPE html>
+<html class="light" lang="id">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Cari Rekomendasi | ElectroMatch</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f4f7fb; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .bg-dots { background-image: radial-gradient(#cbd5e1 1px, transparent 1px); background-size: 24px 24px; }
+        
+        /* Premium Blue Slider */
+        .premium-slider { -webkit-appearance: none; appearance: none; width: 100%; height: 6px; border-radius: 10px; background: #e2e8f0; outline: none; }
+        .premium-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; border-radius: 50%; background: #0052ff; cursor: pointer; box-shadow: 0 2px 6px rgba(0, 82, 255, 0.4); transition: transform 0.1s; }
+        .premium-slider::-webkit-slider-thumb:hover { transform: scale(1.15); }
+    </style>
+</head>
+<body class="bg-dots text-[#191c1e] min-h-screen flex flex-col items-center">
 
-{% block content %}
+    <nav class="w-full bg-white border-b border-gray-100 sticky top-0 z-50">
+    <div class="max-w-[1200px] mx-auto px-6 py-4 flex items-center justify-between">
+        
+        <a href="index.html" class="flex items-center gap-2">
+            <svg width="32" height="32" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M45 30H30C24.477 30 20 34.477 20 40V80C20 85.523 24.477 90 30 90H45" stroke="#0052ff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M20 60H38" stroke="#0052ff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="48" cy="60" r="7" fill="#0052ff"/>
+                <path d="M72 20L48 65H68L60 100L92 50H72L78 20Z" fill="#0052ff"/>
+                <path d="M96 90V40C96 34.477 91.523 30 86 30" stroke="#0052ff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="text-[18px] font-extrabold tracking-tight text-[#191c1e]">Electro<span class="text-[#0052ff]">Match</span></span>
+        </a>
 
-<!-- HEADER -->
-<div style="background: linear-gradient(135deg, #1a1a2e, #0f3460); padding: 40px 0 60px;">
-    <div class="container text-center text-white">
-        <h2 class="fw-bold mb-2">🔍 Cari Rekomendasi</h2>
-        <p class="text-white-50">Isi preferensi kamu dan biarkan sistem menemukan perangkat terbaik</p>
-
-        <!-- STEP INDICATOR -->
-        <div class="d-flex justify-content-center align-items-center gap-3 mt-4">
-            <div class="d-flex flex-column align-items-center">
-                <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold"
-                     style="width:36px; height:36px;
-                            background: {% if results %}#198754{% else %}#0d6efd{% endif %};
-                            color:white; font-size:0.85rem;">
-                    {% if results %}✓{% else %}1{% endif %}
-                </div>
-                <small class="mt-1" style="color:rgba(255,255,255,0.6); font-size:0.78rem;">Pilih Kategori</small>
-            </div>
-            <div style="height:2px; width:50px;
-                        background:{% if results %}#198754{% else %}rgba(255,255,255,0.2){% endif %};"></div>
-            <div class="d-flex flex-column align-items-center">
-                <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold"
-                     style="width:36px; height:36px;
-                            background:{% if results %}#198754{% else %}{% if request.method == 'POST' %}#0d6efd{% else %}rgba(255,255,255,0.2){% endif %}{% endif %};
-                            color:white; font-size:0.85rem;">
-                    {% if results %}✓{% else %}2{% endif %}
-                </div>
-                <small class="mt-1" style="color:rgba(255,255,255,0.6); font-size:0.78rem;">Atur Preferensi</small>
-            </div>
-            <div style="height:2px; width:50px;
-                        background:{% if results %}#198754{% else %}rgba(255,255,255,0.2){% endif %};"></div>
-            <div class="d-flex flex-column align-items-center">
-                <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold"
-                     style="width:36px; height:36px;
-                            background:{% if results %}#198754{% else %}rgba(255,255,255,0.2){% endif %};
-                            color:white; font-size:0.85rem;">
-                    3
-                </div>
-                <small class="mt-1" style="color:rgba(255,255,255,0.6); font-size:0.78rem;">Hasil</small>
-            </div>
+        <div class="flex items-center gap-6">
+            <a href="{% url 'home' %}" class="text-[14px] font-bold text-gray-500 hover:text-[#0052ff] transition">Beranda</a>
+            <a href="{% url 'recommendation' %}" class="text-[14px] font-bold text-gray-500 hover:text-[#0052ff] transition">Cari Rekomendasi</a>
+            
+            <a href="{% url 'home' %}" class="text-[14px] font-bold text-gray-500 hover:text-[#0052ff] transition">Katalog</a>
+            
+            <a href="{% url 'home' %}" class="text-[14px] font-bold text-gray-500 hover:text-[#0052ff] transition">Tentang Kami</a>
         </div>
+
+        <a href="/dashboard/" class="bg-gray-100 text-[#191c1e] px-5 py-2 rounded-lg font-bold text-[12px] hover:bg-gray-200 transition">ADMIN</a>
     </div>
-</div>
+</nav>
 
-<div class="container" style="margin-top: -30px; padding-bottom: 60px;">
-    <div class="row justify-content-center">
-        <div class="col-md-7">
+    <main class="w-full max-w-[800px] flex-grow flex flex-col justify-center items-center px-4 pt-24 pb-12">
+        
+        <div class="text-center mb-10">
+            <div class="inline-flex items-center justify-center w-14 h-14 bg-blue-50 text-[#0052ff] rounded-[18px] mb-5 border border-blue-100 shadow-sm">
+                <span class="material-symbols-outlined text-[28px]">tune</span>
+            </div>
+            <h1 class="text-[36px] font-extrabold leading-tight tracking-tight mb-3">Konfigurasi Parameter Rekomendasi</h1>
+            <p class="text-[15px] text-gray-500 font-medium max-w-xl mx-auto">Sesuaikan kriteria di bawah ini agar asisten cerdas kami dapat menemukan perangkat elektronik yang paling cocok untuk Anda.</p>
+        </div>
 
-            <!-- FORM CARD -->
-            <div class="card border-0 shadow-sm p-4 mb-4" style="border-radius: 16px;">
-                <h6 class="fw-bold mb-4 text-dark">⚙️ Sesuaikan Kebutuhan Anda</h6>
-
-                <form method="POST">
-                    {% csrf_token %}
-
-                    <!-- Kategori -->
-                    <div class="mb-4">
-                        <label class="form-label fw-semibold text-dark" style="font-size:0.9rem;">
-                            Kategori Elektronik
-                        </label>
-                        <select name="category" class="form-select form-select-lg"
-                                style="border-radius:10px; border:1.5px solid #e9ecef;">
-                            <option value="">-- Pilih Kategori --</option>
+        <div class="w-full bg-white rounded-[32px] p-10 shadow-[0_20px_60px_rgb(0,0,0,0.05)] border border-gray-100">
+            <form method="POST" class="space-y-10">
+                {% csrf_token %}
+                
+                <div>
+                    <label class="flex items-center gap-2 text-[11px] font-extrabold text-gray-500 uppercase tracking-widest mb-3">
+                        <span class="material-symbols-outlined text-[#0052ff] text-[18px]">category</span> KATEGORI PERANGKAT
+                    </label>
+                    <div class="relative">
+                        <select name="category" class="w-full appearance-none bg-gray-50 border border-gray-200 text-gray-700 text-[14px] rounded-xl px-5 py-4 focus:ring-2 focus:ring-[#0052ff]/20 focus:border-[#0052ff] outline-none font-bold cursor-pointer transition">
+                            <option value="">-- Tampilkan Semua Kategori --</option>
                             {% for val, label in form.category.field.choices %}
-                                {% if val %}
-                                <option value="{{ val }}"
-                                    {% if form.category.value == val|stringformat:"s" %}selected{% endif %}>
-                                    {{ label }}
-                                </option>
-                                {% endif %}
+                                {% if val %}<option value="{{ val }}">{{ label }}</option>{% endif %}
                             {% endfor %}
                         </select>
+                        <span class="material-symbols-outlined absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">keyboard_arrow_down</span>
                     </div>
+                </div>
 
-                    <!-- Budget Slider -->
-                    <div class="mb-4">
-                        <label class="form-label fw-semibold text-dark" style="font-size:0.9rem;">
-                            Rentang Harga
-                            <span class="text-primary fw-bold ms-2" id="budget-display">Rp 10.000.000</span>
+                <div>
+                    <div class="flex justify-between items-end mb-4">
+                        <label class="flex items-center gap-2 text-[11px] font-extrabold text-gray-500 uppercase tracking-widest">
+                            <span class="material-symbols-outlined text-emerald-500 text-[18px]">payments</span> BATAS ANGGARAN MAKSIMAL
                         </label>
-                        <input
-                            type="range"
-                            class="form-range"
-                            name="budget"
-                            id="budget-slider"
-                            min="1000000"
-                            max="50000000"
-                            step="500000"
-                            value="{{ form.budget.value|default:'10000000' }}"
-                            oninput="updateBudget(this.value)"
-                        >
-                        <div class="d-flex justify-content-between">
-                            <small class="text-muted">Rp 1.000.000</small>
-                            <small class="text-muted">Rp 50.000.000</small>
-                        </div>
+                        <span class="text-[28px] font-extrabold text-[#0052ff] leading-none" id="display-harga">Rp 10.000.000</span>
                     </div>
-
-                    <!-- Kebutuhan -->
-                    <div class="mb-4">
-                        <label class="form-label fw-semibold text-dark" style="font-size:0.9rem;">
-                            Kebutuhan Utama
-                        </label>
-                        <div class="row g-2">
-                            {% for val, label in form.kebutuhan.field.choices %}
-                            {% if val %}
-                            <div class="col-6">
-                                <input type="radio" class="btn-check" name="kebutuhan"
-                                       id="kebutuhan_{{ forloop.counter }}" value="{{ val }}"
-                                       {% if form.kebutuhan.value == val %}checked{% endif %}>
-                                <label class="btn btn-outline-primary w-100"
-                                       style="border-radius:10px; font-size:0.9rem;"
-                                       for="kebutuhan_{{ forloop.counter }}">
-                                    {{ label }}
-                                </label>
-                            </div>
-                            {% endif %}
-                            {% endfor %}
-                        </div>
-                    </div>
-
-                    <button type="submit"
-                            class="btn btn-primary btn-lg w-100"
-                            style="border-radius:10px; font-weight:600;">
-                        🔍 Cari Rekomendasi
-                    </button>
-                </form>
-            </div>
-
-            <!-- HASIL -->
-            {% if results %}
-            <div class="mb-3 d-flex align-items-center justify-content-between">
-                <h5 class="fw-bold mb-0">🏆 Rekomendasi Terbaik Untukmu</h5>
-                <a href="/recommendation/" class="btn btn-outline-primary btn-sm px-3">
-                    🔄 Cari Ulang
-                </a>
-            </div>
-
-            {% for r in results %}
-            <div class="card border-0 shadow-sm mb-3 overflow-hidden"
-                 style="border-radius:14px; transition: transform 0.2s;"
-                 onmouseover="this.style.transform='translateY(-2px)'"
-                 onmouseout="this.style.transform='translateY(0)'">
-
-                <!-- Rank Banner -->
-                {% if forloop.counter == 1 %}
-                <div class="text-white text-center py-1 fw-bold"
-                     style="background: linear-gradient(90deg, #f59e0b, #d97706); font-size:0.82rem;">
-                    🥇 Tingkat Kecocokan Tertinggi
-                </div>
-                {% elif forloop.counter == 2 %}
-                <div class="text-white text-center py-1 fw-semibold"
-                     style="background: #6c757d; font-size:0.82rem;">
-                    🥈 Rekomendasi #2
-                </div>
-                {% elif forloop.counter == 3 %}
-                <div class="text-white text-center py-1 fw-semibold"
-                     style="background: #cd7f32; font-size:0.82rem;">
-                    🥉 Rekomendasi #3
-                </div>
-                {% endif %}
-
-                <div class="p-4">
-                    <div class="d-flex align-items-center gap-3">
-
-                        <!-- Gambar -->
-                        {% if r.product.image %}
-                        <img src="{{ r.product.image.url }}"
-                             style="width:85px; height:85px; object-fit:contain;
-                                    border-radius:10px; background:#f8f9fa; padding:8px;
-                                    flex-shrink:0;">
-                        {% else %}
-                        <div style="width:85px; height:85px; background:#f1f3f5;
-                                    border-radius:10px; display:flex; align-items:center;
-                                    justify-content:center; font-size:2rem; flex-shrink:0;">
-                            📦
-                        </div>
-                        {% endif %}
-
-                        <!-- Info -->
-                        <div class="flex-grow-1 min-width-0">
-                            <h6 class="fw-bold mb-0">{{ r.product.name }}</h6>
-                            <small class="text-muted">
-                                {{ r.product.brand }} &bull; {{ r.product.category }}
-                            </small>
-
-                            <!-- Progress bar -->
-                            <div class="mt-2">
-                                <div class="d-flex justify-content-between mb-1">
-                                    <small class="text-muted" style="font-size:0.78rem;">
-                                        Tingkat Kecocokan
-                                    </small>
-                                    <small class="fw-bold text-primary" style="font-size:0.78rem;">
-                                        {{ r.score|floatformat:0 }}%
-                                    </small>
-                                </div>
-                                <div class="progress" style="height:5px; border-radius:10px;">
-                                    <div class="progress-bar
-                                        {% if forloop.counter == 1 %}bg-warning
-                                        {% elif forloop.counter == 2 %}bg-secondary
-                                        {% else %}bg-danger{% endif %}"
-                                        style="width:{{ r.score|floatformat:0 }}%; border-radius:10px;">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Tags -->
-                            <div class="mt-2 d-flex gap-2 flex-wrap">
-                                <span class="badge"
-                                      style="background:#e8f4fd; color:#0d6efd;
-                                             font-size:0.75rem; border-radius:6px;">
-                                    SAW: {{ r.score }}
-                                </span>
-                                <span class="badge"
-                                      style="background:#f0fdf4; color:#16a34a;
-                                             font-size:0.75rem; border-radius:6px;">
-                                    Rp {{ r.product.price|floatformat:0 }}
-                                </span>
-                            </div>
-                        </div>
-
+                    <input type="range" class="premium-slider" name="budget" min="1000000" max="50000000" step="500000" value="10000000" oninput="updateHarga(this.value)">
+                    <div class="flex justify-between text-[10px] font-bold text-gray-300 mt-2">
+                        <span>Rp 1 Juta</span>
+                        <span>Rp 50 Juta</span>
                     </div>
                 </div>
-            </div>
-            {% endfor %}
 
-            {% elif request.method == "POST" %}
-            <div class="card border-0 shadow-sm p-4 text-center" style="border-radius:14px;">
-                <div style="font-size:3rem;">😔</div>
-                <h6 class="fw-bold mt-3">Tidak ada produk yang cocok</h6>
-                <p class="text-muted small">Coba ubah budget atau pilih kategori yang berbeda.</p>
-                <a href="/recommendation/" class="btn btn-outline-primary btn-sm px-4 mt-2">
-                    🔄 Coba Lagi
-                </a>
-            </div>
-            {% endif %}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                    <div>
+                        <div class="flex justify-between items-end mb-4">
+                            <label class="flex items-center gap-2 text-[11px] font-extrabold text-gray-500 uppercase tracking-widest">
+                                <span class="material-symbols-outlined text-purple-500 text-[18px]">memory</span> KAPASITAS RAM
+                            </label>
+                            <span class="text-[20px] font-extrabold text-[#0052ff]" id="display-ram">8 GB</span>
+                        </div>
+                        <input type="range" class="premium-slider" name="ram" min="4" max="64" step="4" value="8" oninput="updateRam(this.value)">
+                    </div>
 
+                    <div>
+                        <div class="flex justify-between items-end mb-4">
+                            <label class="flex items-center gap-2 text-[11px] font-extrabold text-gray-500 uppercase tracking-widest">
+                                <span class="material-symbols-outlined text-amber-500 text-[18px]">battery_charging_full</span> DAYA TAHAN BATERAI
+                            </label>
+                            <span class="text-[20px] font-extrabold text-[#0052ff]" id="display-baterai">12 Jam</span>
+                        </div>
+                        <input type="range" class="premium-slider" name="baterai" min="4" max="24" step="1" value="12" oninput="updateBaterai(this.value)">
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-[#0052ff] hover:bg-blue-700 text-white font-bold text-[16px] py-4 rounded-xl shadow-lg shadow-blue-500/40 hover:-translate-y-1 transition-all flex items-center justify-center gap-2 mt-2">
+                    <span class="material-symbols-outlined text-[22px]">bolt</span> Cari barang
+                </button>
+                <p class="text-center text-[11px] text-gray-400 font-medium mt-4 italic">Ditenagai oleh Algoritma SAW & Analisis AI Terbaru</p>
+            </form>
         </div>
-    </div>
-</div>
+    </main>
 
-<script>
-    function updateBudget(val) {
-        const formatted = new Intl.NumberFormat('id-ID').format(val);
-        document.getElementById('budget-display').textContent = 'Rp ' + formatted;
-    }
+    <footer class="w-full py-6 text-center text-[11px] font-bold text-gray-400 mt-auto relative z-10">
+        © 2026 ElectroMatch. All rights reserved.
+    </footer>
 
-    window.onload = function() {
-        const slider = document.getElementById('budget-slider');
-        if (slider) updateBudget(slider.value);
-    }
-</script>
-
-{% endblock %}
+    <script>
+        function updateHarga(val) { document.getElementById('display-harga').textContent = 'Rp ' + new Intl.NumberFormat('id-ID').format(val); }
+        function updateRam(val) { document.getElementById('display-ram').textContent = val + ' GB'; }
+        function updateBaterai(val) { document.getElementById('display-baterai').textContent = val + ' Jam'; }
+    </script>
+</body>
+</html>
