@@ -11,9 +11,9 @@
             <h1 class="text-[32px] font-extrabold text-gray-900 tracking-tight leading-tight mb-2">Ringkasan Dashboard</h1>
             <p class="text-[14px] text-gray-500 font-medium">Selamat datang kembali di Admin Console. Pantau performa pencocokan produk dan kelola inventaris Anda dengan kendali penuh.</p>
         </div>
-        <button class="bg-[#0052ff] hover:bg-blue-700 text-white px-5 py-3 rounded-xl text-[13px] font-bold shadow-lg shadow-blue-500/25 transition flex items-center gap-2">
+        <a href="{% url 'download_monthly_report' %}" class="bg-[#0052ff] hover:bg-blue-700 text-white px-5 py-3 rounded-xl text-[13px] font-bold shadow-lg shadow-blue-500/25 transition flex items-center gap-2">
             <span class="material-symbols-outlined text-[18px]">download</span> Unduh Laporan Bulanan
-        </button>
+        </a>
     </div>
 
     <div class="grid grid-cols-4 gap-5 mb-8">

@@ -1,4 +1,11 @@
+import csv
+import datetime
+
+from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
+from django.core.paginator import Paginator
+from django.db.models import Q
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -42,11 +49,61 @@ def dashboard_index(request):
     return render(request, 'dashboard/index.html', context)
 
 
+@login_required(login_url='/login/')
+def download_monthly_report(request):
+    today = datetime.date.today()
+    month_label = today.strftime('%Y%m')
+    month_name = today.strftime('%B %Y')
+    filename = f'laporan-bulanan-{month_label}.csv'
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+
+    writer = csv.writer(response)
+    writer.writerow([f'LAPORAN BULANAN ELECTROMATCH - {month_name}'])
+    writer.writerow([])
+    writer.writerow(['ID', 'Nama Produk', 'Kategori', 'Brand', 'Harga', 'Nilai Kriteria SAW'])
+
+    products = Product.objects.select_related('category').all()
+    values = ProductValue.objects.select_related('criteria').filter(product__in=products)
+    value_map = {}
+    for pv in values:
+        value_map.setdefault(pv.product_id, []).append(pv)
+
+    for product in products:
+        saw_values = value_map.get(product.id, [])
+        saw_text = '; '.join([f'{v.criteria.name}: {v.value}' for v in saw_values]) if saw_values else 'N/A'
+        writer.writerow([
+            product.id,
+            product.name,
+            product.category.name,
+            product.brand,
+            product.price,
+            saw_text,
+        ])
+
+    return response
+
+
 # ───────────── PRODUCT CRUD ─────────────
 @login_required(login_url='/login/')
 def dashboard_products(request):
-    products = Product.objects.select_related('category').all()
-    return render(request, 'dashboard/products.html', {'products': products})
+    query = request.GET.get('q', '').strip()
+    product_list = Product.objects.select_related('category').all()
+
+    if query:
+        product_list = product_list.filter(
+            Q(name__icontains=query) |
+            Q(brand__icontains=query) |
+            Q(category__name__icontains=query)
+        )
+
+    paginator = Paginator(product_list, 10)
+    page_number = request.GET.get('page')
+    products = paginator.get_page(page_number)
+    return render(request, 'dashboard/products.html', {
+        'products': products,
+        'q': query,
+    })
 
 
 @login_required(login_url='/login/')
@@ -69,6 +126,7 @@ def product_add(request):
 @login_required(login_url='/login/')
 def product_edit(request, pk):
     product = get_object_or_404(Product, pk=pk)
+    page = request.GET.get('page') or request.POST.get('page')
     form = ProductForm(instance=product)
 
     if request.method == 'POST':
@@ -76,26 +134,35 @@ def product_edit(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, 'Produk berhasil diupdate!')
-            return redirect('dashboard_products')
+            redirect_url = reverse('dashboard_products')
+            if page:
+                redirect_url += f'?page={page}'
+            return redirect(redirect_url)
 
     return render(request, 'dashboard/product_form.html', {
         'form': form,
         'title': 'Edit Produk',
         'button': 'Update Produk',
-        'product': product
+        'product': product,
+        'page': page
     })
 
 
 @login_required(login_url='/login/')
 def product_delete(request, pk):
     product = get_object_or_404(Product, pk=pk)
+    page = request.GET.get('page') or request.POST.get('page')
     if request.method == 'POST':
         product.delete()
         messages.success(request, 'Produk berhasil dihapus!')
-        return redirect('dashboard_products')
+        redirect_url = reverse('dashboard_products')
+        if page:
+            redirect_url += f'?page={page}'
+        return redirect(redirect_url)
 
     return render(request, 'dashboard/product_confirm_delete.html', {
-        'product': product
+        'product': product,
+        'page': page
     })
 
 

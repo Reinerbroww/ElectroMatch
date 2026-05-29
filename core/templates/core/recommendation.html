@@ -34,14 +34,16 @@
             <span class="text-[18px] font-extrabold tracking-tight text-[#191c1e]">Electro<span class="text-[#0052ff]">Match</span></span>
         </a>
 
+        {% with current_url=request.resolver_match.url_name %}
         <div class="flex items-center gap-6">
-            <a href="{% url 'home' %}" class="text-[14px] font-bold text-gray-500 hover:text-[#0052ff] transition">Beranda</a>
-            <a href="{% url 'recommendation' %}" class="text-[14px] font-bold text-gray-500 hover:text-[#0052ff] transition">Cari Rekomendasi</a>
+            <a href="{% url 'home' %}" class="text-[14px] font-bold {% if current_url == 'home' %}text-[#0052ff]{% else %}text-gray-500 hover:text-[#0052ff]{% endif %} transition">Beranda</a>
+            <a href="{% url 'recommendation' %}" class="text-[14px] font-bold {% if current_url == 'recommendation' %}text-[#0052ff]{% else %}text-gray-500 hover:text-[#0052ff]{% endif %} transition">Cari Rekomendasi</a>
             
-            <a href="{% url 'home' %}" class="text-[14px] font-bold text-gray-500 hover:text-[#0052ff] transition">Katalog</a>
+            <a href="{% url 'catalog' %}" class="text-[14px] font-bold {% if current_url == 'catalog' %}text-[#0052ff]{% else %}text-gray-500 hover:text-[#0052ff]{% endif %} transition">Katalog</a>
             
-            <a href="{% url 'home' %}" class="text-[14px] font-bold text-gray-500 hover:text-[#0052ff] transition">Tentang Kami</a>
+            <a href="{% url 'home' %}" class="text-[14px] font-bold {% if current_url == 'about' %}text-[#0052ff]{% else %}text-gray-500 hover:text-[#0052ff]{% endif %} transition">Tentang Kami</a>
         </div>
+        {% endwith %}
 
         <a href="/dashboard/" class="bg-gray-100 text-[#191c1e] px-5 py-2 rounded-lg font-bold text-[12px] hover:bg-gray-200 transition">ADMIN</a>
     </div>
@@ -117,6 +119,35 @@
                 </button>
                 <p class="text-center text-[11px] text-gray-400 font-medium mt-4 italic">Ditenagai oleh Algoritma SAW & Analisis AI Terbaru</p>
             </form>
+
+            {% if show_results %}
+                {% if results %}
+                    <div class="mt-10 bg-slate-50 border border-slate-200 rounded-[24px] p-8">
+                        <h2 class="text-[22px] font-extrabold text-slate-900 mb-4">Hasil Rekomendasi</h2>
+                        <div class="space-y-4">
+                            {% for item in results %}
+                                <div class="p-4 bg-white rounded-3xl shadow-sm border border-gray-100">
+                                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                                        <div>
+                                            <p class="text-[12px] uppercase tracking-[.2em] text-gray-400">Peringkat {{ forloop.counter }}</p>
+                                            <h3 class="text-[18px] font-bold text-slate-900 mt-2">{{ item.product.name }}</h3>
+                                            <p class="text-[14px] text-gray-500 mt-1">{{ item.product.brand }}</p>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="text-[20px] font-extrabold text-[#0052ff]">{{ item.score }}%</p>
+                                            <p class="text-[12px] text-gray-400 mt-1">Skor rekomendasi</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="mt-10 bg-yellow-50 border border-yellow-200 rounded-[24px] p-8 text-center text-yellow-700">
+                        Tidak ada produk yang sesuai dengan parameter saat ini. Coba ubah kategori atau batas anggaran.
+                    </div>
+                {% endif %}
+            {% endif %}
         </div>
     </main>
 

@@ -5,7 +5,7 @@
 {% block page_content %}
 
 <div class="mb-4">
-    <a href="/dashboard/products/" class="text-muted text-decoration-none" style="font-size:0.9rem;">
+    <a href="{% url 'dashboard_products' %}{% if page %}?page={{ page }}{% endif %}" class="text-muted text-decoration-none" style="font-size:0.9rem;">
         ← Kembali ke Daftar Produk
     </a>
     <h4 class="fw-bold mt-2">Hapus Produk</h4>
@@ -31,11 +31,14 @@
 
         <form method="POST">
             {% csrf_token %}
+            {% if page %}
+            <input type="hidden" name="page" value="{{ page }}">
+            {% endif %}
             <div class="d-flex gap-2">
                 <button type="submit" class="btn btn-danger px-4">
                     🗑️ Ya, Hapus
                 </button>
-                <a href="/dashboard/products/" class="btn btn-outline-secondary px-4">
+                <a href="{% url 'dashboard_products' %}{% if page %}?page={{ page }}{% endif %}" class="btn btn-outline-secondary px-4">
                     Batal
                 </a>
             </div>

@@ -5,7 +5,7 @@
 {% block page_content %}
 
 <div class="mb-4">
-    <a href="/dashboard/products/" class="text-muted text-decoration-none" style="font-size:0.9rem;">
+    <a href="{% url 'dashboard_products' %}{% if page %}?page={{ page }}{% endif %}" class="text-muted text-decoration-none" style="font-size:0.9rem;">
         ← Kembali ke Daftar Produk
     </a>
     <h4 class="fw-bold mt-2">{{ title }}</h4>
@@ -52,11 +52,14 @@
                     {{ form.image }}
                 </div>
 
+                {% if page %}
+                <input type="hidden" name="page" value="{{ page }}">
+                {% endif %}
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-primary px-4">
                         💾 {{ button }}
                     </button>
-                    <a href="/dashboard/products/" class="btn btn-outline-secondary px-4">
+                    <a href="{% url 'dashboard_products' %}{% if page %}?page={{ page }}{% endif %}" class="btn btn-outline-secondary px-4">
                         Batal
                     </a>
                 </div>

@@ -28,12 +28,14 @@
             <span class="text-[18px] font-extrabold text-[#191c1e]">Electro<span class="text-[#0052ff]">Match</span></span>
         </a>
 
+        {% with current_url=request.resolver_match.url_name %}
         <div class="flex items-center gap-8">
-            <a href="{% url 'home' %}" class="text-[14px] font-bold text-[#0052ff]">Beranda</a>
-            <a href="{% url 'recommendation' %}" class="text-[14px] font-bold text-gray-500 hover:text-[#0052ff] transition">Cari Rekomendasi</a>
-            <a href="{% url 'home' %}" class="text-[14px] font-bold text-gray-500 hover:text-[#0052ff] transition">Katalog</a>
-            <a href="{% url 'home' %}" class="text-[14px] font-bold text-gray-500 hover:text-[#0052ff] transition">Tentang Kami</a>
+            <a href="{% url 'home' %}" class="text-[14px] font-bold {% if current_url == 'home' %}text-[#0052ff]{% else %}text-gray-500 hover:text-[#0052ff]{% endif %} transition">Beranda</a>
+            <a href="{% url 'recommendation' %}" class="text-[14px] font-bold {% if current_url == 'recommendation' %}text-[#0052ff]{% else %}text-gray-500 hover:text-[#0052ff]{% endif %} transition">Cari Rekomendasi</a>
+            <a href="{% url 'catalog' %}" class="text-[14px] font-bold {% if current_url == 'catalog' %}text-[#0052ff]{% else %}text-gray-500 hover:text-[#0052ff]{% endif %} transition">Katalog</a>
+            <a href="{% url 'home' %}" class="text-[14px] font-bold {% if current_url == 'about' %}text-[#0052ff]{% else %}text-gray-500 hover:text-[#0052ff]{% endif %} transition">Tentang Kami</a>
         </div>
+        {% endwith %}
 
         <a href="/dashboard/" class="bg-gray-100 text-[#191c1e] px-5 py-2 rounded-lg font-bold text-[12px] hover:bg-gray-200 transition">ADMIN</a>
         </div>
@@ -54,7 +56,7 @@
                 <a href="/recommendation/" class="bg-[#0052ff] text-white px-8 py-4 rounded-xl font-bold text-[15px] flex items-center gap-2 shadow-lg shadow-blue-500/30 hover:bg-blue-700 transition hover:-translate-y-1">
                     Cari Rekomendasi Sekarang <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
                 </a>
-                <a href="#" class="bg-white border border-gray-200 text-gray-700 px-8 py-4 rounded-xl font-bold text-[15px] hover:bg-gray-50 transition">
+                <a href="{% url 'catalog' %}" class="bg-white border border-gray-200 text-gray-700 px-8 py-4 rounded-xl font-bold text-[15px] hover:bg-gray-50 transition">
                     Lihat Katalog
                 </a>
             </div>
@@ -85,6 +87,8 @@
             </div>
         </div>
     </main>
+
+    <!-- Catalog section removed as requested -->
 
     <section class="max-w-[1280px] mx-auto w-full px-8 py-16 text-center">
         <h2 class="text-[32px] font-extrabold mb-12">Mengapa Memilih Kami? <div class="w-16 h-1 bg-[#0052ff] mx-auto mt-4 rounded-full"></div></h2>

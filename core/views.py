@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from .forms import RecommendationForm
-from recommendation.saw import saw_recommendation 
+from recommendation.saw import saw_recommendation
+from products.models import Product, ProductValue
 
 def home(request):
     form = RecommendationForm()
@@ -11,7 +12,9 @@ def recommendation_view(request):
     # Inisialisasi form kosong agar dropdown kategori tidak error
     form = RecommendationForm()
 
+    show_results = False
     if request.method == 'POST':
+        show_results = True
         form = RecommendationForm(request.POST)
         
         # 1. Menangkap pilihan Kategori dari pengguna
@@ -34,5 +37,6 @@ def recommendation_view(request):
 
     return render(request, 'core/recommendation.html', {
         'form': form,
-        'results': results
+        'results': results,
+        'show_results': show_results
     })

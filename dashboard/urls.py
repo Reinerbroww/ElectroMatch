@@ -7,6 +7,7 @@ urlpatterns = [
 
     # dashboard
     path('dashboard/', views.dashboard_index, name='dashboard_index'),
+    path('dashboard/download-report/', views.download_monthly_report, name='download_monthly_report'),
 
     # product
     path('dashboard/products/', views.dashboard_products, name='dashboard_products'),

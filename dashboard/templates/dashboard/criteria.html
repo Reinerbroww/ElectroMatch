@@ -11,7 +11,7 @@
             <h2 class="text-[32px] font-bold text-[#1f2937] leading-tight tracking-tight">Kelola Data Kriteria</h2>
             <p class="text-[#6b7280] mt-2 font-medium">Definisikan parameter penilaian untuk perbandingan produk elektronik dengan presisi. Tambahkan, perbarui, atau hapus kriteria penilaian di sini.</p>
         </div>
-        <a href="#" class="bg-[#003ec7] text-white px-6 py-3 rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-blue-700 hover:-translate-y-1 transition-all shadow-lg shadow-primary/25">
+        <a href="{% url 'criteria_add' %}" class="bg-[#003ec7] text-white px-6 py-3 rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-blue-700 hover:-translate-y-1 transition-all shadow-lg shadow-primary/25">
             <span class="material-symbols-outlined text-lg">add</span>
             Tambah Kriteria
         </a>
@@ -45,12 +45,12 @@
                     </td>
                     <td class="px-8 py-5 text-right">
                         <div class="flex justify-end gap-2">
-                            <button class="w-10 h-10 rounded-[10px] bg-white border border-[#e5e7eb] text-[#3b82f6] hover:bg-blue-50 flex items-center justify-center transition-all shadow-sm">
+                            <a href="{% url 'criteria_edit' c.id %}" class="w-10 h-10 rounded-[10px] bg-white border border-[#e5e7eb] text-[#3b82f6] hover:bg-blue-50 flex items-center justify-center transition-all shadow-sm">
                                 <span class="material-symbols-outlined text-[18px]">edit</span>
-                            </button>
-                            <button class="w-10 h-10 rounded-[10px] bg-white border border-[#e5e7eb] text-[#ef4444] hover:bg-red-50 flex items-center justify-center transition-all shadow-sm">
+                            </a>
+                            <a href="{% url 'criteria_delete' c.id %}" class="w-10 h-10 rounded-[10px] bg-white border border-[#e5e7eb] text-[#ef4444] hover:bg-red-50 flex items-center justify-center transition-all shadow-sm">
                                 <span class="material-symbols-outlined text-[18px]">delete</span>
-                            </button>
+                            </a>
                         </div>
                     </td>
                 </tr>

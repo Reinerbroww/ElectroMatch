@@ -24,9 +24,11 @@
     <div class="container-fluid">
         <a class="navbar-brand text-white" href="/">⚡ ElectroMatch</a>
         <div class="d-flex gap-4 align-items-center">
-            <a href="/" class="nav-link-custom">Beranda</a>
-            <a href="/recommendation/" class="nav-link-custom">Katalog</a>
-            <a href="#" class="nav-link-custom">Tentang Kami</a>
+            {% with current_url=request.resolver_match.url_name %}
+                <a href="/" class="nav-link-custom {% if current_url == 'home' %}text-white{% endif %}">Beranda</a>
+                <a href="{% url 'catalog' %}" class="nav-link-custom {% if current_url == 'catalog' %}text-white{% endif %}">Katalog</a>
+                <a href="#" class="nav-link-custom {% if current_url == 'about' %}text-white{% endif %}">Tentang Kami</a>
+            {% endwith %}
             <a href="/login/" class="btn btn-primary btn-sm px-3"
                style="border-radius: 8px;">Admin Login</a>
         </div>

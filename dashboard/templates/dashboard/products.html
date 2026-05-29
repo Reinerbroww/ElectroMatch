@@ -20,7 +20,7 @@
         <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between">
             <div>
                 <p class="text-[12px] font-bold text-gray-400 mb-1">Total Produk</p>
-                <h3 class="text-[28px] font-extrabold text-gray-900 leading-none">124 <span class="text-[12px] font-bold text-[#0052ff] ml-1">Perangkat</span></h3>
+                <h3 class="text-[28px] font-extrabold text-gray-900 leading-none">177 <span class="text-[12px] font-bold text-[#0052ff] ml-1">Produk tersedia</span></h3>
             </div>
         </div>
         <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between">
@@ -69,8 +69,12 @@
                         <td class="px-8 py-5 font-bold text-gray-900 text-[14px]">Rp {{ p.price|floatformat:0 }}</td>
                         <td class="px-8 py-5">
                             <div class="flex justify-center gap-3">
-                                <button class="text-[#0052ff] hover:text-blue-700 transition"><span class="material-symbols-outlined text-[18px]">edit</span></button>
-                                <button class="text-red-500 hover:text-red-700 transition"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+                                <a href="{% url 'product_edit' p.id %}?page={{ products.number }}" class="text-[#0052ff] hover:text-blue-700 transition">
+                                    <span class="material-symbols-outlined text-[18px]">edit</span>
+                                </a>
+                                <a href="{% url 'product_delete' p.id %}?page={{ products.number }}" class="text-red-500 hover:text-red-700 transition">
+                                    <span class="material-symbols-outlined text-[18px]">delete</span>
+                                </a>
                             </div>
                         </td>
                     </tr>
@@ -100,15 +104,28 @@
         </div>
         
         <div class="px-8 py-4 flex items-center justify-between border-t border-gray-100 bg-white">
-            <span class="text-[12px] font-bold text-gray-400">Menampilkan 5 dari 124 produk</span>
+            <span class="text-[12px] font-bold text-gray-400">Menampilkan {{ products.start_index }}-{{ products.end_index }} dari {{ products.paginator.count }} produk</span>
             <div class="flex items-center gap-1">
-                <button class="w-8 h-8 rounded border border-gray-200 text-gray-400 hover:bg-gray-50 flex items-center justify-center"><span class="material-symbols-outlined text-[18px]">chevron_left</span></button>
-                <button class="w-8 h-8 rounded bg-[#0052ff] text-white text-[12px] font-bold shadow-md">1</button>
-                <button class="w-8 h-8 rounded border border-gray-200 text-gray-500 hover:bg-gray-50 text-[12px] font-bold">2</button>
-                <button class="w-8 h-8 rounded border border-gray-200 text-gray-500 hover:bg-gray-50 text-[12px] font-bold">3</button>
-                <button class="w-8 h-8 rounded border border-gray-200 text-gray-400 hover:bg-gray-50 flex items-center justify-center"><span class="material-symbols-outlined text-[18px]">chevron_right</span></button>
+                {% if products.has_previous %}
+                <a href="?page={{ products.previous_page_number }}{% if q %}&q={{ q }}{% endif %}" class="w-8 h-8 rounded border border-gray-200 text-gray-400 hover:bg-gray-50 flex items-center justify-center"><span class="material-symbols-outlined text-[18px]">chevron_left</span></a>
+                {% else %}
+                <button disabled class="w-8 h-8 rounded border border-gray-200 text-gray-300 flex items-center justify-center"><span class="material-symbols-outlined text-[18px]">chevron_left</span></button>
+                {% endif %}
+
+                {% for i in products.paginator.page_range %}
+                    {% if i >= products.number|add:"-1" and i <= products.number|add:"1" %}
+                    <a href="?page={{ i }}{% if q %}&q={{ q }}{% endif %}" class="w-8 h-8 rounded {% if products.number == i %}bg-[#0052ff] text-white shadow-md{% else %}border border-gray-200 text-gray-500 hover:bg-gray-50{% endif %} text-[12px] font-bold flex items-center justify-center">{{ i }}</a>
+                    {% endif %}
+                {% endfor %}
+
+                {% if products.has_next %}
+                <a href="?page={{ products.next_page_number }}{% if q %}&q={{ q }}{% endif %}" class="w-8 h-8 rounded border border-gray-200 text-gray-400 hover:bg-gray-50 flex items-center justify-center"><span class="material-symbols-outlined text-[18px]">chevron_right</span></a>
+                {% else %}
+                <button disabled class="w-8 h-8 rounded border border-gray-200 text-gray-300 flex items-center justify-center"><span class="material-symbols-outlined text-[18px]">chevron_right</span></button>
+                {% endif %}
             </div>
         </div>
+
     </div>
 
     <div class="flex justify-between text-[11px] font-medium text-gray-400 mt-6 border-t border-gray-200 pt-6">
