@@ -2,51 +2,123 @@
 {% block menu_criteria %}active{% endblock %}
 
 {% block page_content %}
+<style>
+    /* CSS Khusus untuk mengubah Form Default Django menjadi Elegan */
+    .elegant-card {
+        background-color: #ffffff;
+        border-radius: 24px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
+        border: 1px solid rgba(195, 197, 217, 0.3);
+    }
+    .elegant-card label {
+        color: #434656;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+    .elegant-card input, .elegant-card select {
+        width: 100%;
+        padding: 0.8rem 1.25rem !important;
+        border-radius: 12px !important;
+        border: 1px solid #c3c5d9 !important;
+        background-color: #f2f4f6 !important;
+        transition: all 0.3s ease !important;
+        font-size: 0.95rem !important;
+        color: #191c1e !important;
+        box-shadow: none !important;
+    }
+    .elegant-card input:focus, .elegant-card select:focus {
+        background-color: #ffffff !important;
+        border-color: #0052ff !important;
+        box-shadow: 0 0 0 4px rgba(0, 82, 255, 0.1) !important;
+        outline: none !important;
+    }
+    .btn-elegant-primary {
+        background-color: #0052ff;
+        color: white;
+        border-radius: 12px;
+        padding: 0.8rem 2rem;
+        font-weight: 600;
+        border: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0, 82, 255, 0.2);
+    }
+    .btn-elegant-primary:hover {
+        background-color: #003ec7;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0, 82, 255, 0.3);
+    }
+    .btn-elegant-secondary {
+        background-color: white;
+        color: #434656;
+        border-radius: 12px;
+        padding: 0.8rem 2rem;
+        font-weight: 600;
+        border: 1px solid #c3c5d9;
+        transition: all 0.3s ease;
+    }
+    .btn-elegant-secondary:hover {
+        background-color: #f2f4f6;
+        color: #191c1e;
+    }
+</style>
+
 <div class="mb-4">
-    <a href="/dashboard/criteria/" class="text-muted text-decoration-none" style="font-size:0.9rem;">
-        ← Kembali ke Kriteria
+    <a href="/dashboard/criteria/" class="text-decoration-none d-flex align-items-center gap-2" style="color: #737688; font-size:0.95rem; font-weight: 500;">
+        <span class="material-symbols-outlined" style="font-size: 18px;">arrow_back</span> Kembali ke Kriteria
     </a>
-    <h4 class="fw-bold mt-2">{{ title }}</h4>
+    <h4 class="fw-bold mt-3" style="color: #191c1e;">{{ title }}</h4>
 </div>
 
 <div class="row">
-    <div class="col-md-6">
-        <div class="table-card p-4">
+    <div class="col-md-7">
+        <div class="elegant-card p-4 p-md-5">
 
             <!-- Info SAW -->
-            <div class="alert alert-info mb-4" style="font-size:0.85rem;">
-                💡 <strong>Tips:</strong> Benefit = semakin besar semakin bagus (RAM, Storage).
-                Cost = semakin kecil semakin bagus (Harga). Total semua bobot harus = 1.0
+            <div class="alert mb-4 d-flex gap-3 align-items-start" style="background-color: rgba(0, 82, 255, 0.05); border: 1px solid rgba(0, 82, 255, 0.1); border-radius: 16px; color: #434656;">
+                <span class="material-symbols-outlined text-primary">lightbulb</span>
+                <div style="font-size:0.85rem; line-height: 1.6;">
+                    <strong>Tips Penilaian:</strong><br>
+                    Benefit = semakin besar nilainya semakin bagus (Contoh: RAM, Storage).<br>
+                    Cost = semakin kecil nilainya semakin bagus (Contoh: Harga).<br>
+                    <em>*Total semua bobot kriteria harus mencapai angka 1.0</em>
+                </div>
             </div>
 
             <form method="POST">
                 {% csrf_token %}
 
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Nama Kriteria</label>
+                <div class="mb-4">
+                    <label>Nama Kriteria</label>
                     {{ form.name }}
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Tipe Kriteria</label>
+                <div class="mb-4">
+                    <label>Tipe Kriteria</label>
                     {{ form.type }}
-                    <div class="d-flex gap-3 mt-2">
-                        <small class="text-success">↑ Benefit = makin besar makin bagus</small>
-                        <small class="text-danger">↓ Cost = makin kecil makin bagus</small>
+                    <div class="d-flex flex-column flex-sm-row gap-2 gap-sm-4 mt-3">
+                        <small class="d-flex align-items-center gap-1" style="color: #059669; font-weight: 500;">
+                            <span class="material-symbols-outlined" style="font-size: 16px;">trending_up</span> Benefit
+                        </small>
+                        <small class="d-flex align-items-center gap-1" style="color: #dc2626; font-weight: 500;">
+                            <span class="material-symbols-outlined" style="font-size: 16px;">trending_down</span> Cost
+                        </small>
                     </div>
                 </div>
 
-                <div class="mb-4">
-                    <label class="form-label fw-semibold">Bobot (0.0 - 1.0)</label>
+                <div class="mb-5">
+                    <label>Bobot Penilaian (0.0 - 1.0)</label>
                     {{ form.weight }}
-                    <small class="text-muted">Contoh: 0.3 = 30% dari total penilaian</small>
+                    <small class="text-muted mt-2 d-block">Contoh: Ketik 0.3 jika kriteria ini menyumbang 30% dari total penilaian</small>
                 </div>
 
-                <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-primary px-4">
-                        💾 {{ button }}
+                <div class="d-flex gap-3">
+                    <button type="submit" class="btn-elegant-primary d-flex align-items-center gap-2">
+                        <span class="material-symbols-outlined" style="font-size: 18px;">save</span> {{ button }}
                     </button>
-                    <a href="/dashboard/criteria/" class="btn btn-outline-secondary px-4">
+                    <a href="/dashboard/criteria/" class="btn-elegant-secondary text-decoration-none">
                         Batal
                     </a>
                 </div>

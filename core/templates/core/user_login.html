@@ -1,12 +1,15 @@
+{% load static %}
 <!DOCTYPE html>
 <html class="light" lang="id">
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>Masuk | ElectroMatch</title>
+    
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -22,21 +25,31 @@
                         "outline-variant": "#c3c5d9",
                         "on-secondary-fixed-variant": "#3f465c",
                     },
-                }
+                    "fontFamily": {
+                        "label-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-md": ["Inter"],
+                    }
+                },
             },
         }
     </script>
     <style>
         body { font-family: 'Inter', sans-serif; }
-        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-        .soft-gradient { background: radial-gradient(circle at top right, #f0f4ff, #f7f9fb); }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .soft-gradient {
+            background: radial-gradient(circle at top right, #f0f4ff, #f7f9fb);
+        }
     </style>
 </head>
 <body class="soft-gradient text-on-background min-h-screen flex flex-col">
 
     <div class="max-w-[1280px] mx-auto px-4 md:px-10 py-6 w-full">
         <a href="{% url 'home' %}" class="flex items-center gap-3">
-            <svg width="36" height="36" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg width="36" height="36" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" class="shrink-0">
                 <path d="M45 30H30C24.477 30 20 34.477 20 40V80C20 85.523 24.477 90 30 90H45" stroke="#0052ff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M20 60H38" stroke="#0052ff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
                 <circle cx="48" cy="60" r="7" fill="#0052ff"/>
@@ -51,10 +64,13 @@
 
     <main class="flex-grow flex items-center justify-center p-4">
         <div class="w-full max-w-[480px] bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-outline-variant/30 overflow-hidden relative">
+            
             <div class="absolute -right-20 -top-20 opacity-[0.03] pointer-events-none select-none">
                 <span class="material-symbols-outlined text-[15rem] rotate-12">grid_view</span>
             </div>
+
             <div class="p-8 md:p-12 relative z-10">
+                
                 <div class="text-center mb-10">
                     <div class="inline-flex items-center justify-center w-20 h-20 bg-[#0052ff]/5 rounded-[24px] mb-6">
                         <svg width="48" height="48" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -66,7 +82,7 @@
                         </svg>
                     </div>
                     <h1 class="text-2xl font-bold text-on-surface mb-2">Selamat Datang</h1>
-                    <p class="text-on-surface-variant text-[15px]">Masuk untuk melihat rekomendasi elektronik terbaik</p>
+                    <p class="text-on-surface-variant text-[16px]">Masuk untuk mengakses sistem ElectroMatch</p>
                 </div>
 
                 {% if error %}
@@ -75,28 +91,70 @@
                 </div>
                 {% endif %}
 
-                <form class="space-y-5" method="POST">
+                <form class="space-y-5" method="POST" autocomplete="off">
                     {% csrf_token %}
+                    
                     <div class="space-y-1.5">
-                       <label class="text-[14px] font-medium text-on-surface-variant ml-1" for="username">Email</label>
-                        <input class="w-full px-4 py-3 bg-surface-container-low/50 border border-outline-variant/60 rounded-xl focus:ring-2 focus:ring-primary/10 focus:border-primary focus:bg-white transition-all text-[16px] outline-none placeholder:text-outline" id="username" name="username" placeholder="Masukkan email" type="email" required />
-                    </div>
-                    <div class="space-y-1.5">
-                        <label class="text-[14px] font-medium text-on-surface-variant" for="password">Kata Sandi</label>
+                        <label class="text-[14px] font-medium text-on-surface-variant ml-1" for="username">Email</label>
                         <div class="relative">
-                            <input class="w-full px-4 py-3 bg-surface-container-low/50 border border-outline-variant/60 rounded-xl focus:ring-2 focus:ring-primary/10 focus:border-primary focus:bg-white transition-all text-[16px] outline-none placeholder:text-outline" id="password" name="password" placeholder="Masukkan kata sandi" type="password" required />
+                            <input class="w-full px-4 py-3 bg-surface-container-low/50 border border-outline-variant/60 rounded-xl focus:ring-2 focus:ring-primary/10 focus:border-primary focus:bg-white transition-all text-[16px] outline-none placeholder:text-outline" id="username" name="username" placeholder="Masukkan email Anda" type="text" autocomplete="new-password" required />
+                        </div>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between items-center px-1">
+                            <label class="text-[14px] font-medium text-on-surface-variant" for="password">Kata Sandi</label>
+                            <a class="text-[13px] font-medium text-primary hover:underline" href="#">Lupa kata sandi?</a>
+                        </div>
+                        <div class="relative">
+                            <input class="w-full px-4 py-3 bg-surface-container-low/50 border border-outline-variant/60 rounded-xl focus:ring-2 focus:ring-primary/10 focus:border-primary focus:bg-white transition-all text-[16px] outline-none placeholder:text-outline" id="password" name="password" placeholder="••••••••" type="password" autocomplete="new-password" required />
                             <button class="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-on-surface-variant" type="button" id="togglePassword">
                                 <span class="material-symbols-outlined text-[20px]" id="eyeIcon">visibility</span>
                             </button>
                         </div>
                     </div>
+
+                    <div class="flex items-center px-1">
+                        <input class="h-4 w-4 text-primary focus:ring-primary/20 border-outline-variant rounded transition-all cursor-pointer" id="remember-me" type="checkbox"/>
+                        <label class="ml-2.5 block text-[14px] text-on-surface-variant cursor-pointer" for="remember-me">
+                            Ingat saya di perangkat ini
+                        </label>
+                    </div>
+
                     <button class="w-full py-3.5 px-6 bg-primary text-white rounded-xl font-semibold shadow-md shadow-primary/20 hover:bg-primary/90 hover:shadow-lg transition-all duration-300 active:scale-[0.98] mt-2" id="loginBtn" type="submit">
-                        Masuk
+                        Masuk 
                     </button>
                 </form>
 
-                <p class="mt-8 text-center text-[13px] text-outline">
-                    Belum punya akun? <a class="text-primary font-semibold hover:underline" href="{% url 'register' %}">Daftar sekarang</a>
+                <div class="mt-10">
+                    <div class="relative flex items-center mb-8">
+                        <div class="flex-grow border-t border-outline-variant/40"></div>
+                        <span class="flex-shrink mx-4 text-[13px] text-outline font-medium">Atau lanjut dengan</span>
+                        <div class="flex-grow border-t border-outline-variant/40"></div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <button type="button" class="flex items-center justify-center gap-2.5 py-2.5 border border-outline-variant/50 rounded-xl hover:bg-surface-container-low transition-all active:scale-[0.97] group">
+                            <svg class="w-5 h-5" viewBox="0 0 24 24">
+                                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
+                                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
+                                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"></path>
+                                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path>
+                            </svg>
+                            <span class="text-[14px] font-medium text-on-surface">Google</span>
+                        </button>
+                        
+                        <button type="button" class="flex items-center justify-center gap-2.5 py-2.5 border border-outline-variant/50 rounded-xl hover:bg-surface-container-low transition-all active:scale-[0.97] group">
+                            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="#1877F2">
+                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                            </svg>
+                            <span class="text-[14px] font-medium text-on-surface">Facebook</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <p class="mt-10 text-center text-[13px] text-outline relative z-50">
+                    Belum punya akun? <a class="text-primary font-semibold hover:underline inline-block py-1 px-2" href="{% url 'register' %}">Daftar sekarang</a>
                 </p>
             </div>
         </div>
@@ -114,19 +172,24 @@
     </footer>
 
     <script>
+        // Fitur Show/Hide Password
         const togglePassword = document.getElementById('togglePassword');
         const passwordInput = document.getElementById('password');
         const eyeIcon = document.getElementById('eyeIcon');
+
         togglePassword.addEventListener('click', function () {
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
             passwordInput.setAttribute('type', type);
             eyeIcon.textContent = type === 'password' ? 'visibility' : 'visibility_off';
         });
+
+        // Efek loading saat tombol ditekan
         const loginForm = document.querySelector('form');
         const loginBtn = document.getElementById('loginBtn');
+
         loginForm.addEventListener('submit', () => {
             loginBtn.disabled = true;
-            loginBtn.innerHTML = 'Menghubungkan...';
+            loginBtn.innerHTML = '<span class="flex items-center justify-center gap-2">Menghubungkan... <svg class="animate-spin h-4 w-4 text-white" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg></span>';
         });
     </script>
 </body>

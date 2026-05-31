@@ -12,11 +12,11 @@ def home(request):
 
 
 def recommendation_view(request):
-    if not request.user.is_authenticated:
-        return redirect('home')
+    # KUNCI LOGIN DIHAPUS DI SINI AGAR PUBLIK BISA AKSES
     results = []
     form = RecommendationForm()
     show_results = False
+    
     if request.method == 'POST':
         show_results = True
         form = RecommendationForm(request.POST)
@@ -24,17 +24,20 @@ def recommendation_view(request):
         budget = float(request.POST.get('budget', 10000000))
         ram = float(request.POST.get('ram', 8))
         baterai = float(request.POST.get('baterai', 12))
+        
         user_weights = {
             'harga': budget,
             'ram': ram,
             'baterai': baterai
         }
         results = saw_recommendation(user_weights=user_weights, category=category)
+        
     return render(request, 'core/recommendation.html', {
         'form': form,
         'results': results,
         'show_results': show_results
     })
+
 
 def about(request):
     return render(request, 'core/about.html')
@@ -55,33 +58,42 @@ def register(request):
         name = request.POST.get('name')
         email = request.POST.get('email')
         password = request.POST.get('password')
-        if User.objects.filter(email=email).exists():
+        kode_rahasia = request.POST.get('kode_rahasia') 
+
+        if kode_rahasia != "KELOMPOK2_GACOR":
+            error = 'Kode rahasia salah! Hanya pihak internal yang diizinkan mendaftar.'
+        elif User.objects.filter(email=email).exists():
             error = 'Email sudah terdaftar.'
         else:
+            # Jika kode benar, buat user dan jadikan dia Admin (is_staff = True)
             user = User.objects.create_user(username=email, email=email, password=password)
             user.first_name = name
+            user.is_staff = True 
             user.save()
             return redirect('user_login')
+            
     return render(request, 'core/register.html', {'error': error})
 
 
 def user_login(request):
     error = None
+    
     if request.user.is_authenticated:
-        return redirect('beranda')
+        return redirect('/dashboard/') 
+    
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)
-        if user is not None and not user.is_staff:
+        
+        if user is not None:
             auth_login(request, user)
-            return redirect('beranda')
+            return redirect('/dashboard/') 
         else:
-            error = 'Username atau password salah.'
+            error = 'Email atau kata sandi salah.'
+            
     return render(request, 'core/user_login.html', {'error': error})
-
 
 def user_logout(request):
     auth_logout(request)
     return redirect('user_login')
-

@@ -1,65 +1,138 @@
 {% extends 'dashboard/base_dashboard.html' %}
-
 {% block menu_products %}active{% endblock %}
 
 {% block page_content %}
+<style>
+    /* Menggunakan CSS Elegan yang sama agar seragam */
+    .elegant-card {
+        background-color: #ffffff;
+        border-radius: 24px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
+        border: 1px solid rgba(195, 197, 217, 0.3);
+    }
+    .elegant-card label {
+        color: #434656;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+    .elegant-card input, .elegant-card select {
+        width: 100%;
+        padding: 0.8rem 1.25rem !important;
+        border-radius: 12px !important;
+        border: 1px solid #c3c5d9 !important;
+        background-color: #f2f4f6 !important;
+        transition: all 0.3s ease !important;
+        font-size: 0.95rem !important;
+        color: #191c1e !important;
+        box-shadow: none !important;
+    }
+    .elegant-card input[type="file"] {
+        padding: 0.6rem 1.25rem !important;
+        background-color: #ffffff !important;
+    }
+    .elegant-card input:focus, .elegant-card select:focus {
+        background-color: #ffffff !important;
+        border-color: #0052ff !important;
+        box-shadow: 0 0 0 4px rgba(0, 82, 255, 0.1) !important;
+        outline: none !important;
+    }
+    .btn-elegant-primary {
+        background-color: #0052ff;
+        color: white;
+        border-radius: 12px;
+        padding: 0.8rem 2rem;
+        font-weight: 600;
+        border: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0, 82, 255, 0.2);
+    }
+    .btn-elegant-primary:hover {
+        background-color: #003ec7;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0, 82, 255, 0.3);
+    }
+    .btn-elegant-secondary {
+        background-color: white;
+        color: #434656;
+        border-radius: 12px;
+        padding: 0.8rem 2rem;
+        font-weight: 600;
+        border: 1px solid #c3c5d9;
+        transition: all 0.3s ease;
+    }
+    .btn-elegant-secondary:hover {
+        background-color: #f2f4f6;
+        color: #191c1e;
+    }
+</style>
 
 <div class="mb-4">
-    <a href="{% url 'dashboard_products' %}{% if page %}?page={{ page }}{% endif %}" class="text-muted text-decoration-none" style="font-size:0.9rem;">
-        ← Kembali ke Daftar Produk
+    <a href="{% url 'dashboard_products' %}{% if page %}?page={{ page }}{% endif %}" class="text-decoration-none d-flex align-items-center gap-2" style="color: #737688; font-size:0.95rem; font-weight: 500;">
+        <span class="material-symbols-outlined" style="font-size: 18px;">arrow_back</span> Kembali ke Daftar Produk
     </a>
-    <h4 class="fw-bold mt-2">{{ title }}</h4>
+    <h4 class="fw-bold mt-3" style="color: #191c1e;">{{ title }}</h4>
 </div>
 
 <div class="row">
-    <div class="col-md-7">
-        <div class="table-card p-4">
+    <div class="col-md-8">
+        <div class="elegant-card p-4 p-md-5">
             <form method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
 
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Nama Produk</label>
+                <div class="mb-4">
+                    <label>Nama Produk</label>
                     {{ form.name }}
                     {% if form.name.errors %}
-                    <div class="text-danger small mt-1">{{ form.name.errors }}</div>
+                    <div class="text-danger small mt-2 fw-medium d-flex align-items-center gap-1">
+                        <span class="material-symbols-outlined" style="font-size: 14px;">error</span> {{ form.name.errors }}
+                    </div>
                     {% endif %}
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Kategori</label>
-                    {{ form.category }}
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Brand</label>
-                    {{ form.brand }}
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Harga (Rp)</label>
-                    {{ form.price }}
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <label>Kategori</label>
+                        {{ form.category }}
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <label>Brand</label>
+                        {{ form.brand }}
+                    </div>
                 </div>
 
                 <div class="mb-4">
-                    <label class="form-label fw-semibold">Gambar Produk</label>
+                    <label>Harga Produk (Rp)</label>
+                    {{ form.price }}
+                </div>
+
+                <div class="mb-5">
+                    <label>Gambar Produk</label>
+                    
                     {% if product and product.image %}
-                    <div class="mb-2">
-                        <img src="{{ product.image.url }}"
-                             style="height:80px; object-fit:contain; border-radius:8px; background:#f8f9fa; padding:8px;">
-                        <small class="text-muted ms-2">Gambar saat ini</small>
+                    <div class="mb-3 d-flex align-items-center gap-3 p-3" style="background: #f8f9fa; border-radius: 12px; border: 1px solid #e5e7eb;">
+                        <img src="{{ product.image.url }}" style="height:60px; width:60px; object-fit:cover; border-radius:8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                        <div>
+                            <span class="d-block fw-semibold text-dark" style="font-size: 0.9rem;">Gambar Saat Ini</span>
+                            <small class="text-muted">Upload gambar baru untuk mengganti</small>
+                        </div>
                     </div>
                     {% endif %}
+                    
                     {{ form.image }}
                 </div>
 
                 {% if page %}
                 <input type="hidden" name="page" value="{{ page }}">
                 {% endif %}
-                <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-primary px-4">
-                        💾 {{ button }}
+                
+                <div class="d-flex gap-3 pt-2">
+                    <button type="submit" class="btn-elegant-primary d-flex align-items-center gap-2">
+                        <span class="material-symbols-outlined" style="font-size: 18px;">save</span> {{ button }}
                     </button>
-                    <a href="{% url 'dashboard_products' %}{% if page %}?page={{ page }}{% endif %}" class="btn btn-outline-secondary px-4">
+                    <a href="{% url 'dashboard_products' %}{% if page %}?page={{ page }}{% endif %}" class="btn-elegant-secondary text-decoration-none">
                         Batal
                     </a>
                 </div>
@@ -67,5 +140,4 @@
         </div>
     </div>
 </div>
-
 {% endblock %}

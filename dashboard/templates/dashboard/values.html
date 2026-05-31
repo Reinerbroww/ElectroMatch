@@ -27,8 +27,8 @@
                         <th class="px-8 py-5 text-[11px] font-extrabold text-[#6b7280] uppercase tracking-widest w-24">Peringkat</th>
                         <th class="px-8 py-5 text-[11px] font-extrabold text-[#6b7280] uppercase tracking-widest">Nama Produk</th>
                         <th class="px-8 py-5 text-[11px] font-extrabold text-[#6b7280] uppercase tracking-widest text-center">Harga</th>
-                        <th class="px-8 py-5 text-[11px] font-extrabold text-[#6b7280] uppercase tracking-widest text-center">RAM</th>
-                        <th class="px-8 py-5 text-[11px] font-extrabold text-[#6b7280] uppercase tracking-widest text-center">Baterai</th>
+                        <th class="px-8 py-5 text-[11px] font-extrabold text-[#6b7280] uppercase tracking-widest text-center">Brand</th>
+                        <th class="px-8 py-5 text-[11px] font-extrabold text-[#6b7280] uppercase tracking-widest text-center">Kategori</th>
                         <th class="px-8 py-5 text-[11px] font-extrabold text-[#6b7280] uppercase tracking-widest text-right">Skor Akhir</th>
                     </tr>
                 </thead>
@@ -55,13 +55,13 @@
                             </div>
                         </td>
                         <td class="px-8 py-5 text-center">
-                            <span class="inline-block px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-[12px] font-bold">95</span>
+                            <span class="inline-block px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-[12px] font-bold">Rp {{ r.product.price }}</span>
                         </td>
                         <td class="px-8 py-5 text-center">
-                            <span class="inline-block px-3 py-1 rounded-full bg-purple-50 text-purple-600 text-[12px] font-bold">98</span>
+                            <span class="inline-block px-3 py-1 rounded-full bg-purple-50 text-purple-600 text-[12px] font-bold">{{ r.product.brand }}</span>
                         </td>
                         <td class="px-8 py-5 text-center">
-                            <span class="inline-block px-3 py-1 rounded-full bg-pink-50 text-pink-600 text-[12px] font-bold">100</span>
+                            <span class="inline-block px-3 py-1 rounded-full bg-pink-50 text-pink-600 text-[12px] font-bold">{{ r.product.category.name }}</span>
                         </td>
                         <td class="px-8 py-5 text-right">
                             <span class="text-[16px] font-extrabold text-gray-900">{{ r.score }}</span>
@@ -70,17 +70,12 @@
                     
                     {% empty %}
                     <tr class="hover:bg-surface-container-low/30 transition-colors">
-                        <td class="px-8 py-5 whitespace-nowrap"><span class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-primary/10 text-primary font-extrabold text-[13px]">#1</span></td>
-                        <td class="px-8 py-5">
-                            <div class="flex items-center space-x-4">
-                                <div class="w-12 h-12 rounded-[12px] bg-surface-container-low flex items-center justify-center"><span class="material-symbols-outlined text-outline">laptop_mac</span></div>
-                                <div><p class="text-[15px] font-extrabold text-gray-900">ASUS ROG Zenith</p><p class="text-[11px] font-bold text-gray-400">SKU: EM-9001</p></div>
+                        <td colspan="6" class="px-8 py-10 text-center">
+                            <div class="flex flex-col items-center justify-center">
+                                <span class="material-symbols-outlined text-gray-300 text-5xl mb-3">database</span>
+                                <p class="text-gray-500 font-medium">Belum ada data produk atau kriteria untuk dihitung.</p>
                             </div>
                         </td>
-                        <td class="px-8 py-5 text-center"><span class="inline-block px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-[12px] font-bold">95</span></td>
-                        <td class="px-8 py-5 text-center"><span class="inline-block px-3 py-1 rounded-full bg-purple-50 text-purple-600 text-[12px] font-bold">98</span></td>
-                        <td class="px-8 py-5 text-center"><span class="inline-block px-3 py-1 rounded-full bg-pink-50 text-pink-600 text-[12px] font-bold">100</span></td>
-                        <td class="px-8 py-5 text-right"><span class="text-[16px] font-extrabold text-gray-900">98.4</span></td>
                     </tr>
                     {% endfor %}
 

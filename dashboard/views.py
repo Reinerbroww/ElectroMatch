@@ -229,25 +229,29 @@ def criteria_delete(request, pk):
 # ───────────── PRODUCT VALUE CRUD ─────────────
 @login_required(login_url='/login/')
 def dashboard_values(request):
-    # filter by product kalau ada
-    product_id = request.GET.get('product')
-    products = Product.objects.all()
-    selected_product = None
+    from recommendation.saw import saw_recommendation
 
-    if product_id:
-        selected_product = get_object_or_404(Product, pk=product_id)
+    categories = Category.objects.all()
+    selected_category = request.GET.get('category', '')
+
+    # 1. Panggil SAW tanpa filter budget aneh-aneh dari teman Abang
+    # Agar 10 besar ranking global muncul semua!
+    rankings = saw_recommendation(category=selected_category)
+
+    # 2. Ambil nilai RAM/Baterai aslinya dari database (opsional jika dibutuhkan nanti)
+    for r in rankings:
         values = ProductValue.objects.filter(
-            product=selected_product
+            product=r['product']
         ).select_related('criteria')
-    else:
-        values = ProductValue.objects.select_related(
-            'product', 'criteria'
-        ).all()
+        r['values'] = {v.criteria.name: v.value for v in values}
+
+    products = Product.objects.all()
 
     return render(request, 'dashboard/values.html', {
-        'values': values,
+        'rankings': rankings,
         'products': products,
-        'selected_product': selected_product,
+        'categories': categories,
+        'selected_category': selected_category,
     })
 
 
