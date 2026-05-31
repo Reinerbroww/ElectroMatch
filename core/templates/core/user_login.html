@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html class="light" lang="id">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Masuk | ElectroMatch</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#003ec7",
+                        "on-primary": "#ffffff",
+                        "surface-container-low": "#f2f4f6",
+                        "on-surface": "#191c1e",
+                        "on-surface-variant": "#434656",
+                        "outline": "#737688",
+                        "outline-variant": "#c3c5d9",
+                        "on-secondary-fixed-variant": "#3f465c",
+                    },
+                }
+            },
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .soft-gradient { background: radial-gradient(circle at top right, #f0f4ff, #f7f9fb); }
+    </style>
+</head>
+<body class="soft-gradient text-on-background min-h-screen flex flex-col">
+
+    <div class="max-w-[1280px] mx-auto px-4 md:px-10 py-6 w-full">
+        <a href="{% url 'home' %}" class="flex items-center gap-3">
+            <svg width="36" height="36" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M45 30H30C24.477 30 20 34.477 20 40V80C20 85.523 24.477 90 30 90H45" stroke="#0052ff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M20 60H38" stroke="#0052ff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="48" cy="60" r="7" fill="#0052ff"/>
+                <path d="M72 20L48 65H68L60 100L92 50H72L78 20Z" fill="#0052ff"/>
+                <path d="M96 90V40C96 34.477 91.523 30 86 30" stroke="#0052ff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="text-[24px] font-extrabold tracking-tight leading-none">
+                <span class="text-[#0052ff]">Electro</span><span class="text-[#191c1e]">Match</span>
+            </span>
+        </a>
+    </div>
+
+    <main class="flex-grow flex items-center justify-center p-4">
+        <div class="w-full max-w-[480px] bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-outline-variant/30 overflow-hidden relative">
+            <div class="absolute -right-20 -top-20 opacity-[0.03] pointer-events-none select-none">
+                <span class="material-symbols-outlined text-[15rem] rotate-12">grid_view</span>
+            </div>
+            <div class="p-8 md:p-12 relative z-10">
+                <div class="text-center mb-10">
+                    <div class="inline-flex items-center justify-center w-20 h-20 bg-[#0052ff]/5 rounded-[24px] mb-6">
+                        <svg width="48" height="48" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M45 30H30C24.477 30 20 34.477 20 40V80C20 85.523 24.477 90 30 90H45" stroke="#0052ff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M20 60H38" stroke="#0052ff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="48" cy="60" r="7" fill="#0052ff"/>
+                            <path d="M72 20L48 65H68L60 100L92 50H72L78 20Z" fill="#0052ff"/>
+                            <path d="M96 90V40C96 34.477 91.523 30 86 30" stroke="#0052ff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h1 class="text-2xl font-bold text-on-surface mb-2">Selamat Datang</h1>
+                    <p class="text-on-surface-variant text-[15px]">Masuk untuk melihat rekomendasi elektronik terbaik</p>
+                </div>
+
+                {% if error %}
+                <div class="bg-red-50 border border-red-200 text-red-600 text-[13px] font-medium px-4 py-3 rounded-xl mb-6 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[18px]">error</span> {{ error }}
+                </div>
+                {% endif %}
+
+                <form class="space-y-5" method="POST">
+                    {% csrf_token %}
+                    <div class="space-y-1.5">
+                       <label class="text-[14px] font-medium text-on-surface-variant ml-1" for="username">Email</label>
+                        <input class="w-full px-4 py-3 bg-surface-container-low/50 border border-outline-variant/60 rounded-xl focus:ring-2 focus:ring-primary/10 focus:border-primary focus:bg-white transition-all text-[16px] outline-none placeholder:text-outline" id="username" name="username" placeholder="Masukkan email" type="email" required />
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-[14px] font-medium text-on-surface-variant" for="password">Kata Sandi</label>
+                        <div class="relative">
+                            <input class="w-full px-4 py-3 bg-surface-container-low/50 border border-outline-variant/60 rounded-xl focus:ring-2 focus:ring-primary/10 focus:border-primary focus:bg-white transition-all text-[16px] outline-none placeholder:text-outline" id="password" name="password" placeholder="Masukkan kata sandi" type="password" required />
+                            <button class="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-on-surface-variant" type="button" id="togglePassword">
+                                <span class="material-symbols-outlined text-[20px]" id="eyeIcon">visibility</span>
+                            </button>
+                        </div>
+                    </div>
+                    <button class="w-full py-3.5 px-6 bg-primary text-white rounded-xl font-semibold shadow-md shadow-primary/20 hover:bg-primary/90 hover:shadow-lg transition-all duration-300 active:scale-[0.98] mt-2" id="loginBtn" type="submit">
+                        Masuk
+                    </button>
+                </form>
+
+                <p class="mt-8 text-center text-[13px] text-outline">
+                    Belum punya akun? <a class="text-primary font-semibold hover:underline" href="{% url 'register' %}">Daftar sekarang</a>
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="w-full py-8">
+        <div class="max-w-[1280px] mx-auto px-4 md:px-10 flex flex-col md:flex-row justify-between items-center gap-4 border-t border-outline-variant/20 pt-8">
+            <p class="text-[13px] text-on-secondary-fixed-variant">© 2026 ElectroMatch. Presisi dalam kecepatan tinggi.</p>
+            <div class="flex gap-6">
+                <a class="text-[13px] text-on-secondary-fixed-variant hover:text-primary transition-colors" href="#">Syarat Layanan</a>
+                <a class="text-[13px] text-on-secondary-fixed-variant hover:text-primary transition-colors" href="#">Kebijakan Privasi</a>
+                <a class="text-[13px] text-on-secondary-fixed-variant hover:text-primary transition-colors" href="#">Bantuan</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+        const eyeIcon = document.getElementById('eyeIcon');
+        togglePassword.addEventListener('click', function () {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            eyeIcon.textContent = type === 'password' ? 'visibility' : 'visibility_off';
+        });
+        const loginForm = document.querySelector('form');
+        const loginBtn = document.getElementById('loginBtn');
+        loginForm.addEventListener('submit', () => {
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = 'Menghubungkan...';
+        });
+    </script>
+</body>
+</html>
